@@ -322,7 +322,7 @@
     <li><a href="mailto:${CONFIG.email}">${icoMail}<span>${CONFIG.email}</span></a></li>
     <li><a href="${CONFIG.googleMaps}" target="_blank" rel="noopener">${icoPin}<span>${rua} — ${cidade}/${estado}, ${cep}</span></a></li>
     <li><a href="${CONFIG.instagram}" target="_blank" rel="noopener">${icoIg}<span>Instagram</span></a></li>
-    <li><a href="${CONFIG.booking}" target="_blank" rel="noopener">${icoStar}<span>Ver as 77 avaliações no Booking</span></a></li>
+    <li><a href="${CONFIG.booking}" target="_blank" rel="noopener">${icoStar}<span>Ver as 89 avaliações no Booking</span></a></li>
   `;
 
   $('#ft-contato').innerHTML = `
