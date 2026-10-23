@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://di-fronte-al-bosco.vercel.app/sitemap.xml

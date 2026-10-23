@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- Colibri — assinatura da Di Fronte al Bosco -->
+  <rect width="64" height="64" rx="14" fill="#3a5a40"/>
+  <g fill="none" stroke="#f6f2ea" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+    <!-- corpo e cauda -->
+    <path d="M40 26c4 1 6 5 5 9-1.5 6-7 9-13 10-4 .7-8 3-10 7" />
+    <!-- cabeça e bico -->
+    <path d="M40 26c1-3 3.5-4.5 6-4.5M46 21.5l9-3" />
+    <!-- asa levantada -->
+    <path d="M38 28c-2-7-8-11-15-10 3 4 4 9 9 12" />
+    <!-- asa inferior -->
+    <path d="M36 33c-6-1-12 1-15 6 5 1 10 0 13-2" />
+  </g>
+  <!-- olho -->
+  <circle cx="42.5" cy="23.5" r="1.6" fill="#e8c9a0"/>
+</svg>
