@@ -796,6 +796,7 @@ p { margin: 0 0 1.1rem; }
 .cal__grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: .3rem; }
 .cal__dia { border: 1px solid var(--bege); border-radius: 6px; background: var(--branco); padding: .4rem .2rem; font-size: .8rem; text-align: center; color: var(--grafite); }
 .cal__dia--livre { border-color: var(--verde); color: var(--verde-esc); cursor: pointer; }
+.cal__dia--feriado { background: #e8f5e9; border-style: dashed; }
 .cal__dia--ocupado { background: #f3d9d9; color: #8a3b3b; text-decoration: line-through; }
 .cal__dia--fechado { background: #eee; color: #999; }
 .cal__dia--vazio { border: none; background: transparent; }

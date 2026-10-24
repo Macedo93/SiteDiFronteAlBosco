@@ -34,3 +34,21 @@ chama a pré-reserva (`CONFIG.preReservaUrl`).
   tem suíte, nome nem telefone para gravar uma pré-reserva.
 - A pré-reserva só existe no ar depois que a branch pre-reserva-agenda for
   mergeada e deployada na agenda; até lá, o site cai para o WhatsApp.
+
+## Controle de datas (painel da agenda, refletido no calendário)
+
+O anfitrião controla datas no painel "Controle de datas" da agenda (só admin),
+sem mexer no código do site:
+
+- Bloquear um período: a noite aparece em vermelho no calendário, com o
+  motivo no título, e a pré-reserva é recusada com 409 e o motivo.
+- Liberar um período fora do fim de semana (feriado): a noite aparece em
+  verde tracejado no calendário e pode ser pré-reservada, mesmo sendo dia
+  de semana.
+- "Todas as suítes" no painel grava uma linha por suíte. Um bloqueio vence
+  uma liberação na mesma noite.
+- Regra da pré-reserva, noite por noite: sexta ou sábado, ou noite
+  liberada pelo anfitrião. Sem isso, o pedido vai pelo WhatsApp.
+- A migração `supabase_availability_overrides.sql` da agenda precisa ser
+  rodada no Supabase antes de confiar nos bloqueios; sem ela, a API cai
+  para o comportamento antigo e o site não quebra.

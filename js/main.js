@@ -124,19 +124,58 @@
     });
     return ocupadas;
   };
+  // Motivo do bloqueio manual do anfitrião, por noite (source Bloqueio).
+  const motivosBloqueio = (numSuite) => {
+    const motivos = new Map();
+    if (!disponibilidade || !disponibilidade.occupied) return motivos;
+    const periodos = disponibilidade.occupied[String(numSuite)] || [];
+    periodos.forEach((p) => {
+      if (p.source !== 'Bloqueio') return;
+      let dia = p.checkIn;
+      while (dia < p.checkOut) { if (!motivos.has(dia)) motivos.set(dia, p.reason || ''); dia = somarDia(dia, 1); }
+    });
+    return motivos;
+  };
+  // Noites fora do fim de semana liberadas pelo anfitrião (openExceptions).
+  const noitesLiberadas = (numSuite) => {
+    const liberadas = new Map();
+    if (!disponibilidade || !disponibilidade.openExceptions) return liberadas;
+    const periodos = disponibilidade.openExceptions[String(numSuite)] || [];
+    periodos.forEach((p) => {
+      let dia = p.checkIn;
+      while (dia < p.checkOut) { if (!liberadas.has(dia)) liberadas.set(dia, p.reason || ''); dia = somarDia(dia, 1); }
+    });
+    return liberadas;
+  };
 
   const validarPeriodo = (numSuite, ini, fim) => {
     if (!ini || !fim) return 'Informe as datas de check-in e check-out.';
     if (fim <= ini) return 'O check-out precisa ser depois do check-in.';
     if (noites(ini, fim) > 14) return 'Estadia máxima de 14 noites pelo site. Para estadias maiores, fale com a gente no WhatsApp.';
     if (ini < hoje) return 'O check-in não pode ser no passado.';
-    if (!noiteFimDeSemana(ini)) return 'Nesta primeira versão, a pré-reserva pelo site é só para check-in de sexta ou sábado. Para feriados e outras datas, fale com a gente no WhatsApp.';
+    // Regra da casa, noite por noite: sexta ou sábado, ou noite liberada
+    // pelo anfitrião (feriado). Um bloqueio manual vence a liberação.
+    const bloqueios = motivosBloqueio(numSuite);
+    const liberadas = noitesLiberadas(numSuite);
+    let dia = ini;
+    while (dia < fim) {
+      if (bloqueios.has(dia)) {
+        const motivo = bloqueios.get(dia);
+        return motivo
+          ? `A noite de ${dataBr(dia)} está bloqueada pelo anfitrião: ${motivo}. Escolha outro período.`
+          : `A noite de ${dataBr(dia)} está bloqueada pelo anfitrião. Escolha outro período.`;
+      }
+      if (!noiteFimDeSemana(dia) && !liberadas.has(dia)) {
+        return 'A pré-reserva pelo site é só para noites de sexta ou sábado, ou feriado liberado pelo anfitrião. Para outras datas, fale com a gente no WhatsApp.';
+      }
+      dia = somarDia(dia, 1);
+    }
     if (disponibilidade) {
       const ocupadas = noitesOcupadas(numSuite);
-      let dia = ini;
-      while (dia < fim) {
-        if (ocupadas.has(dia)) return `A noite de ${dataBr(dia)} já está ocupada para esta suíte. Escolha outro período.`;
-        dia = somarDia(dia, 1);
+      let d2 = ini;
+      while (d2 < fim) {
+        if (ocupadas.has(d2)) return `A noite de ${dataBr(d2)} já está ocupada para esta suíte. Escolha outro período.`;
+        d2 = somarDia(d2, 1);
       }
     }
     return null;
@@ -160,6 +199,8 @@
     }
     aviso.textContent = 'Toque numa noite verde para começar a pré-reserva nela.';
     const ocupadas = noitesOcupadas(numSuite);
+    const bloqueios = motivosBloqueio(numSuite);
+    const liberadas = noitesLiberadas(numSuite);
     const meses = [];
     const base = new Date(hoje + 'T00:00:00Z');
     for (let off = 0; off < 2; off++) {
@@ -174,10 +215,16 @@
         const iso = new Date(Date.UTC(ano, mes, d)).toISOString().slice(0, 10);
         if (iso < hoje) {
           html += `<span class="cal__dia cal__dia--fechado">${d}</span>`;
+        } else if (bloqueios.has(iso)) {
+          const motivo = bloqueios.get(iso);
+          html += `<span class="cal__dia cal__dia--ocupado" title="${motivo ? 'Bloqueada: ' + motivo.replace(/"/g, '') : 'Bloqueada pelo anfitrião'}">${d}</span>`;
         } else if (ocupadas.has(iso)) {
           html += `<span class="cal__dia cal__dia--ocupado" title="Ocupada">${d}</span>`;
-        } else if (!noiteFimDeSemana(iso)) {
+        } else if (!noiteFimDeSemana(iso) && !liberadas.has(iso)) {
           html += `<span class="cal__dia cal__dia--fechado" title="Fora da regra de fim de semana">${d}</span>`;
+        } else if (liberadas.has(iso)) {
+          const motivo = liberadas.get(iso);
+          html += `<button type="button" class="cal__dia cal__dia--livre cal__dia--feriado" data-dia="${iso}" title="${motivo ? 'Feriado liberado: ' + motivo.replace(/"/g, '') : 'Feriado liberado'}">${d}</button>`;
         } else {
           html += `<button type="button" class="cal__dia cal__dia--livre" data-dia="${iso}" title="Noite livre">${d}</button>`;
         }
