@@ -18,12 +18,15 @@ execução, a partir dos IDs definidos em `js/config.js`.
 Código recuperado do site em produção em 22/10/2026 (o projeto original estava
 em outra conta da Vercel).
 
-## Pré-reserva (branch pre-reserva-site, sem merge)
+## Pré-reserva e calendário único (data primeiro)
 
-O formulário completo (`#fform`) agora consulta a disponibilidade pública da
-agenda (`CONFIG.availabilityUrl`), mostra um calendário por suíte com noites
-livres de sexta/sábado, ocupadas e dias de semana fora da regra, e ao enviar
-chama a pré-reserva (`CONFIG.preReservaUrl`).
+O formulário completo (`#fform`) consulta a disponibilidade pública da
+agenda (`CONFIG.availabilityUrl`) e mostra UM calendário para as 3 suítes:
+cada noite tem pontos para Hidro, Suíte 2 e Suíte 3 (verde = livre,
+vermelho = ocupada ou bloqueada, cinza = dia de semana fechado). O hóspede
+escolhe as datas primeiro e, abaixo do calendário, aparecem só as suítes
+livres para todo o período, com preço total. Ao escolher uma suíte e enviar,
+o site chama a pré-reserva (`CONFIG.preReservaUrl`).
 
 - Se a pré-reserva gravar na agenda, o site mostra a confirmação de
   "pré-reserva recebida, aguardando confirmação do anfitrião" e abre o
