@@ -181,26 +181,104 @@
     return null;
   };
 
+  /* ── Calendário único, data primeiro ──────────────────────
+     Dados continuam separados por suíte (uma reserva ocupa só uma
+     suíte); o que é único é a visualização. Cada noite mostra pontos
+     para as 3 suítes, em ordem Hidro, Suíte 2, Suíte 3: verde = livre,
+     vermelho = ocupada ou bloqueada, cinza = dia de semana fechado. */
+  const SUITES_INFO = [
+    { nome: 'Suíte Hidromassagem', numero: 1, destaque: 'Banheira de hidromassagem · 2 camas de casal' },
+    { nome: 'Suíte 2', numero: 2, destaque: 'Cama de casal + solteiro' },
+    { nome: 'Suíte 3', numero: 3, destaque: 'TV + espaço de trabalho' },
+  ];
+
+  const mapasDisponibilidade = () => {
+    const mapas = { ocupadas: {}, bloqueios: {}, liberadas: {} };
+    for (const s of SUITES_INFO) {
+      mapas.ocupadas[s.numero] = noitesOcupadas(s.numero);
+      mapas.bloqueios[s.numero] = motivosBloqueio(s.numero);
+      mapas.liberadas[s.numero] = noitesLiberadas(s.numero);
+    }
+    return mapas;
+  };
+
+  const pontoSuite = (numSuite, iso, mapas) => {
+    if (mapas.bloqueios[numSuite].has(iso)) return 'ocupado';
+    if (mapas.ocupadas[numSuite].has(iso)) return 'ocupado';
+    if (noiteFimDeSemana(iso)) return 'livre';
+    if (mapas.liberadas[numSuite].has(iso)) return 'livre';
+    return 'fechado';
+  };
+
+  const suitesLivresNoite = (iso, mapas) => {
+    if (!disponibilidade) return [];
+    return SUITES_INFO.filter((s) => pontoSuite(s.numero, iso, mapas) === 'livre');
+  };
+
+  const suitesLivresPeriodo = (ini, fim, hospedesNum) => {
+    if (!disponibilidade || !ini || !fim || fim <= ini) return [];
+    const mapas = mapasDisponibilidade();
+    return SUITES_INFO.filter((s) => {
+      if (typeof hospedesNum === 'number' && hospedesNum > SUITE_CAPACIDADE[s.nome]) return false;
+      let dia = ini;
+      while (dia < fim) {
+        if (pontoSuite(s.numero, dia, mapas) !== 'livre') return false;
+        dia = somarDia(dia, 1);
+      }
+      return true;
+    });
+  };
+
+  const renderSuitesLivres = () => {
+    const el = $('#suites-livres');
+    if (!el) return;
+    if (!disponibilidade) { el.innerHTML = ''; return; }
+    const ini = $('#f-in').value, fim = $('#f-out').value;
+    if (!ini || !fim || fim <= ini) {
+      el.innerHTML = '<p class="suites-livres__aviso">Escolha uma noite no calendário para ver as suítes livres para o período.</p>';
+      return;
+    }
+    const hospedesRaw = $('#f-h').value;
+    const hospedes = hospedesRaw === '5 ou mais' ? 5 : Number(hospedesRaw);
+    const livres = suitesLivresPeriodo(ini, fim, hospedes);
+    if (!livres.length) {
+      el.innerHTML = '<p class="suites-livres__aviso">Nenhuma suíte livre para todo o período escolhido. Tente outras datas, ou fale no WhatsApp que confirmamos por lá.</p>';
+      return;
+    }
+    const n = noites(ini, fim);
+    const escolhida = $('#f-s').value;
+    el.innerHTML = '<p class="suites-livres__titulo">Suítes livres para o período escolhido:</p>' + livres.map((s) => {
+      const diaria = PRECOS[s.nome];
+      const total = diaria * n;
+      const sel = escolhida === s.nome;
+      return `<button type="button" class="suite-livre${sel ? ' suite-livre--escolhida' : ''}" data-suite-nome="${s.nome}">` +
+        `<span class="suite-livre__nome">${s.nome}</span>` +
+        `<span class="suite-livre__det">${s.destaque} · até ${SUITE_CAPACIDADE[s.nome]} hóspedes</span>` +
+        `<span class="suite-livre__preco">${total.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL', maximumFractionDigits: 0 })} <small>(${n} ${n === 1 ? 'noite' : 'noites'} × ${diaria.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL', maximumFractionDigits: 0 })})</small></span>` +
+        `<span class="suite-livre__acao">${sel ? 'Suíte escolhida' : 'Escolher esta suíte'}</span></button>`;
+    }).join('');
+    el.querySelectorAll('[data-suite-nome]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        $('#f-s').value = btn.dataset.suiteNome;
+        pintarCalc();
+        renderSuitesLivres();
+        document.getElementById('fform-note').textContent = '';
+      });
+    });
+  };
+
   const renderCalendario = () => {
     const grade = $('#calendario-grade');
     const aviso = $('#calendario-aviso');
     if (!grade || !aviso) return;
-    const suiteNome = $('#f-s').value;
-    const numSuite = SUITE_NUMERO[suiteNome];
-    if (!numSuite) {
-      aviso.textContent = 'Escolha uma suíte para ver o calendário de disponibilidade.';
-      grade.innerHTML = '';
-      return;
-    }
     if (!disponibilidade) {
       aviso.textContent = disponibilidadeAviso || 'Calendário indisponível no momento. Você ainda pode enviar pelo WhatsApp.';
       grade.innerHTML = '';
+      renderSuitesLivres();
       return;
     }
-    aviso.textContent = 'Toque numa noite verde para começar a pré-reserva nela.';
-    const ocupadas = noitesOcupadas(numSuite);
-    const bloqueios = motivosBloqueio(numSuite);
-    const liberadas = noitesLiberadas(numSuite);
+    aviso.textContent = 'Toque numa noite verde para começar a pré-reserva nela. Depois, escolha uma das suítes livres abaixo.';
+    const mapas = mapasDisponibilidade();
     const meses = [];
     const base = new Date(hoje + 'T00:00:00Z');
     for (let off = 0; off < 2; off++) {
@@ -215,18 +293,23 @@
         const iso = new Date(Date.UTC(ano, mes, d)).toISOString().slice(0, 10);
         if (iso < hoje) {
           html += `<span class="cal__dia cal__dia--fechado">${d}</span>`;
-        } else if (bloqueios.has(iso)) {
-          const motivo = bloqueios.get(iso);
-          html += `<span class="cal__dia cal__dia--ocupado" title="${motivo ? 'Bloqueada: ' + motivo.replace(/"/g, '') : 'Bloqueada pelo anfitrião'}">${d}</span>`;
-        } else if (ocupadas.has(iso)) {
-          html += `<span class="cal__dia cal__dia--ocupado" title="Ocupada">${d}</span>`;
-        } else if (!noiteFimDeSemana(iso) && !liberadas.has(iso)) {
-          html += `<span class="cal__dia cal__dia--fechado" title="Fora da regra de fim de semana">${d}</span>`;
-        } else if (liberadas.has(iso)) {
-          const motivo = liberadas.get(iso);
-          html += `<button type="button" class="cal__dia cal__dia--livre cal__dia--feriado" data-dia="${iso}" title="${motivo ? 'Feriado liberado: ' + motivo.replace(/"/g, '') : 'Feriado liberado'}">${d}</button>`;
+          continue;
+        }
+        const livres = suitesLivresNoite(iso, mapas);
+        const pontos = SUITES_INFO.map((s) => {
+          const p = pontoSuite(s.numero, iso, mapas);
+          return `<span class="cal__ponto cal__ponto--${p}" title="${s.nome}"></span>`;
+        }).join('');
+        const corpo = `${d}<span class="cal__pontos">${pontos}</span>`;
+        if (!livres.length) {
+          let motivo = '';
+          for (const s of SUITES_INFO) {
+            if (mapas.bloqueios[s.numero].has(iso)) { motivo = mapas.bloqueios[s.numero].get(iso); break; }
+          }
+          html += `<span class="cal__dia cal__dia--ocupado" title="${motivo ? 'Bloqueada: ' + motivo.replace(/"/g, '') : 'Todas as suítes ocupadas'}">${corpo}</span>`;
         } else {
-          html += `<button type="button" class="cal__dia cal__dia--livre" data-dia="${iso}" title="Noite livre">${d}</button>`;
+          const feriado = !noiteFimDeSemana(iso) && livres.some((s) => mapas.liberadas[s.numero].has(iso));
+          html += `<button type="button" class="cal__dia cal__dia--livre${feriado ? ' cal__dia--feriado' : ''}" data-dia="${iso}" title="Livres: ${livres.map((s) => s.nome).join(', ')}">${corpo}</button>`;
         }
       }
       html += '</div>';
@@ -238,6 +321,7 @@
         $('#f-in').value = btn.dataset.dia;
         $('#f-out').value = somarDia(btn.dataset.dia, 1);
         pintarCalc();
+        renderSuitesLivres();
         document.getElementById('fform-note').textContent = '';
       });
     });
@@ -257,6 +341,7 @@
       disponibilidadeAviso = 'Não foi possível carregar o calendário agora. Você ainda pode enviar pelo WhatsApp, e confirmamos a disponibilidade por lá.';
     }
     renderCalendario();
+    renderSuitesLivres();
   };
   carregarDisponibilidade();
 
@@ -312,6 +397,7 @@
   ['#f-in', '#f-out', '#f-s', '#f-h'].forEach((s) => {
     $(s).addEventListener('change', pintarCalc);
     $(s).addEventListener('change', renderCalendario);
+    $(s).addEventListener('change', renderSuitesLivres);
   });
 
   $('#fform').addEventListener('submit', async (e) => {
@@ -334,7 +420,7 @@
 
     const textoWa = (extra) =>
       `Olá! Meu nome é ${nome} e vim pelo site da Di Fronte al Bosco.\n\n` +
-      `Gostaria de reservar a ${suite === 'Sem preferência' ? 'suíte (sem preferência)' : suite}\n` +
+      `Gostaria de reservar a ${SUITE_NUMERO[suite] ? suite : 'suíte (a escolher)'}\n` +
       `Check-in: ${dataBr(ini)}\n` +
       `Check-out: ${dataBr(fim)}\n` +
       `Noites: ${n}\n` +
@@ -349,6 +435,12 @@
     // vai só pelo WhatsApp, como antes.
     const numSuite = SUITE_NUMERO[suite];
     if (!numSuite) {
+      const livresPeriodo = suitesLivresPeriodo(ini, fim, hospedes);
+      if (livresPeriodo.length) {
+        nota.textContent = 'Escolha uma das suítes livres acima para gravar a pré-reserva.';
+        document.getElementById('suites-livres')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        return;
+      }
       nota.textContent = 'Sem suíte definida, enviamos só pelo WhatsApp.';
       abrirWa(textoWa(''));
       return;
