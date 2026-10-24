@@ -301,7 +301,7 @@ p { margin: 0 0 1.1rem; }
   border-radius: var(--r);
   padding: 1.4rem;
   display: grid;
-  grid-template-columns: repeat(3, 1fr) auto;
+  grid-template-columns: repeat(4, 1fr) auto;
   gap: 1rem;
   align-items: end;
   text-align: left;
@@ -793,6 +793,10 @@ p { margin: 0 0 1.1rem; }
 .calendario__aviso { font-size: .84rem; color: var(--cinza); margin: 0 0 .6rem; }
 .calendario__legenda { font-size: .76rem; color: var(--cinza); line-height: 1.5; margin: .6rem 0 0; }
 .cal__mes { font-weight: 700; color: var(--verde-esc); margin: 1rem 0 .4rem; text-transform: capitalize; }
+.cal__nav { display: flex; align-items: center; justify-content: space-between; gap: .5rem; margin: 1rem 0 .4rem; }
+.cal__nav .cal__mes { margin: 0; }
+.cal__navbtn { border: 1px solid var(--bege); background: var(--branco); border-radius: 50%; width: 34px; height: 34px; font-size: 1.2rem; line-height: 1; color: var(--verde-esc); cursor: pointer; }
+.cal__navbtn:disabled { opacity: .35; cursor: default; }
 .cal__grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: .3rem; }
 .cal__dia { border: 1px solid var(--bege); border-radius: 6px; background: var(--branco); padding: .4rem .2rem; font-size: .8rem; text-align: center; color: var(--grafite); }
 .cal__dia--livre { border-color: var(--verde); color: var(--verde-esc); cursor: pointer; }

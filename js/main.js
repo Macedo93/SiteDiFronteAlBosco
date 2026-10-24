@@ -100,6 +100,7 @@
      continua funcionando. */
   let disponibilidade = null;
   let disponibilidadeAviso = '';
+  let mesCalendarioOffset = 0;
 
   const diaSemana = (iso) => {
     const [a, m, d] = iso.split('-').map(Number);
@@ -279,45 +280,47 @@
     }
     aviso.textContent = 'Toque numa noite verde para começar a pré-reserva nela. Depois, escolha uma das suítes livres abaixo.';
     const mapas = mapasDisponibilidade();
-    const meses = [];
-    const base = new Date(hoje + 'T00:00:00Z');
-    for (let off = 0; off < 2; off++) {
-      const ano = base.getUTCFullYear();
-      const mes = base.getUTCMonth() + off;
-      const primeiro = new Date(Date.UTC(ano, mes, 1));
-      const diasNoMes = new Date(Date.UTC(ano, mes + 1, 0)).getUTCDate();
-      const nomeMes = primeiro.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric', timeZone: 'UTC' });
-      let html = `<div class="cal__mes">${nomeMes}</div><div class="cal__grid">`;
-      for (let i = 0; i < primeiro.getUTCDay(); i++) html += '<span class="cal__dia cal__dia--vazio"></span>';
-      for (let d = 1; d <= diasNoMes; d++) {
-        const iso = new Date(Date.UTC(ano, mes, d)).toISOString().slice(0, 10);
-        if (iso < hoje) {
-          html += `<span class="cal__dia cal__dia--fechado">${d}</span>`;
-          continue;
-        }
-        const livres = suitesLivresNoite(iso, mapas);
-        const pontos = SUITES_INFO.map((s) => {
-          const p = pontoSuite(s.numero, iso, mapas);
-          return `<span class="cal__ponto cal__ponto--${p}" title="${s.nome}"></span>`;
-        }).join('');
-        const corpo = `${d}<span class="cal__pontos">${pontos}</span>`;
-        if (!livres.length && !noiteFimDeSemana(iso) && !SUITES_INFO.some((s) => mapas.liberadas[s.numero].has(iso))) {
-          html += `<span class="cal__dia cal__dia--fechado" title="Dia de semana, fora da regra da casa">${corpo}</span>`;
-        } else if (!livres.length) {
-          let motivo = '';
-          for (const s of SUITES_INFO) {
-            if (mapas.bloqueios[s.numero].has(iso)) { motivo = mapas.bloqueios[s.numero].get(iso); break; }
-          }
-          html += `<span class="cal__dia cal__dia--ocupado" title="${motivo ? 'Bloqueada: ' + motivo.replace(/"/g, '') : 'Todas as suítes ocupadas'}">${corpo}</span>`;
-        } else {
-          const feriado = !noiteFimDeSemana(iso) && livres.some((s) => mapas.liberadas[s.numero].has(iso));
-          html += `<button type="button" class="cal__dia cal__dia--livre${feriado ? ' cal__dia--feriado' : ''}" data-dia="${iso}" title="Livres: ${livres.map((s) => s.nome).join(', ')}">${corpo}</button>`;
-        }
+    const baseHoje = new Date(hoje + 'T00:00:00Z');
+    const primeiro = new Date(Date.UTC(baseHoje.getUTCFullYear(), baseHoje.getUTCMonth() + mesCalendarioOffset, 1));
+    const ano = primeiro.getUTCFullYear();
+    const mes = primeiro.getUTCMonth();
+    const diasNoMes = new Date(Date.UTC(ano, mes + 1, 0)).getUTCDate();
+    const nomeMes = primeiro.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric', timeZone: 'UTC' });
+    let html = `<div class="cal__nav"><button type="button" class="cal__navbtn" data-mes="-1" ${mesCalendarioOffset <= 0 ? 'disabled' : ''} aria-label="Mês anterior">‹</button><span class="cal__mes">${nomeMes}</span><button type="button" class="cal__navbtn" data-mes="1" ${mesCalendarioOffset >= 11 ? 'disabled' : ''} aria-label="Próximo mês">›</button></div><div class="cal__grid">`;
+    for (let i = 0; i < primeiro.getUTCDay(); i++) html += '<span class="cal__dia cal__dia--vazio"></span>';
+    for (let d = 1; d <= diasNoMes; d++) {
+      const iso = new Date(Date.UTC(ano, mes, d)).toISOString().slice(0, 10);
+      if (iso < hoje) {
+        html += `<span class="cal__dia cal__dia--fechado">${d}</span>`;
+        continue;
       }
-      html += '</div>';
-      meses.push(html);
+      const livres = suitesLivresNoite(iso, mapas);
+      const pontos = SUITES_INFO.map((s) => {
+        const p = pontoSuite(s.numero, iso, mapas);
+        return `<span class="cal__ponto cal__ponto--${p}" title="${s.nome}"></span>`;
+      }).join('');
+      const corpo = `${d}<span class="cal__pontos">${pontos}</span>`;
+      if (!livres.length && !noiteFimDeSemana(iso) && !SUITES_INFO.some((s) => mapas.liberadas[s.numero].has(iso))) {
+        html += `<span class="cal__dia cal__dia--fechado" title="Dia de semana, fora da regra da casa">${corpo}</span>`;
+      } else if (!livres.length) {
+        let motivo = '';
+        for (const s of SUITES_INFO) {
+          if (mapas.bloqueios[s.numero].has(iso)) { motivo = mapas.bloqueios[s.numero].get(iso); break; }
+        }
+        html += `<span class="cal__dia cal__dia--ocupado" title="${motivo ? 'Bloqueada: ' + motivo.replace(/"/g, '') : 'Todas as suítes ocupadas'}">${corpo}</span>`;
+      } else {
+        const feriado = !noiteFimDeSemana(iso) && livres.some((s) => mapas.liberadas[s.numero].has(iso));
+        html += `<button type="button" class="cal__dia cal__dia--livre${feriado ? ' cal__dia--feriado' : ''}" data-dia="${iso}" title="Livres: ${livres.map((s) => s.nome).join(', ')}">${corpo}</button>`;
+      }
     }
-    grade.innerHTML = meses.join('');
+    html += '</div>';
+    grade.innerHTML = html;
+    grade.querySelectorAll('[data-mes]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        mesCalendarioOffset = Math.min(11, Math.max(0, mesCalendarioOffset + Number(btn.dataset.mes)));
+        renderCalendario();
+      });
+    });
     grade.querySelectorAll('[data-dia]').forEach((btn) => {
       btn.addEventListener('click', () => {
         $('#f-in').value = btn.dataset.dia;
@@ -354,21 +357,23 @@
     const ini = $('#q-in').value;
     const fim = $('#q-out').value;
     const h = $('#q-h').value;
-
-    if (!ini || !fim) {
-      abrirWa('Olá! Gostaria de consultar a disponibilidade da Di Fronte al Bosco.');
-      return;
+    const suite = $('#q-s') ? $('#q-s').value : '';
+    if (ini) $('#f-in').value = ini;
+    if (fim) $('#f-out').value = fim;
+    if (h) $('#f-h').value = h === '5+' ? '5 ou mais' : h;
+    $('#f-s').value = suite || 'Escolha nas suítes livres abaixo';
+    if (ini) {
+      const [a, m] = ini.split('-').map(Number);
+      const baseHoje = new Date(hoje + 'T00:00:00Z');
+      const off = (a - baseHoje.getUTCFullYear()) * 12 + ((m - 1) - baseHoje.getUTCMonth());
+      mesCalendarioOffset = Math.min(11, Math.max(0, off));
     }
-
-    const n = noites(ini, fim);
-    abrirWa(
-      `Olá! Vim pelo site da Di Fronte al Bosco.\n\n` +
-      `Check-in: ${dataBr(ini)}\n` +
-      `Check-out: ${dataBr(fim)}\n` +
-      `Noites: ${n}\n` +
-      `Hóspedes: ${h}\n\n` +
-      `Tem disponibilidade? Qual o valor?`
-    );
+    pintarCalc();
+    renderCalendario();
+    renderSuitesLivres();
+    const destino = document.getElementById('fform');
+    if (destino) destino.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    if (!ini || !fim) document.getElementById('fform-note').textContent = 'Escolha as datas no calendário para ver as suítes livres.';
   });
 
   /* ── Formulário completo + calculadora de diárias ───────── */
