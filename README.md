@@ -59,3 +59,11 @@ sem mexer no código do site:
 - A migração `supabase_availability_overrides.sql` da agenda precisa ser
   rodada no Supabase antes de confiar nos bloqueios; sem ela, a API cai
   para o comportamento antigo e o site não quebra.
+
+
+## Páginas por suíte (SEO)
+
+- `suites/suite-hidromassagem/`, `suites/suite-2/` e `suites/suite-3/`: uma página por suíte, com título e descrição próprios, fotos da suíte, especificações, regras da casa e link para a pré-reserva na página inicial.
+- Cada página tem JSON-LD HotelRoom (preço, capacidade, camas) e BreadcrumbList, e está no sitemap.xml.
+- Os cards da página inicial ligam para essas páginas ("Ver a página da suíte").
+- As fotos seguem o mesmo agrupamento do site principal (banheiro com hidromassagem certo; quartos das Suítes 2 e 3 são hipótese visual, conferir com o anfitrião).
