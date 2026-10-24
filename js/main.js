@@ -301,7 +301,9 @@
           return `<span class="cal__ponto cal__ponto--${p}" title="${s.nome}"></span>`;
         }).join('');
         const corpo = `${d}<span class="cal__pontos">${pontos}</span>`;
-        if (!livres.length) {
+        if (!livres.length && !noiteFimDeSemana(iso) && !SUITES_INFO.some((s) => mapas.liberadas[s.numero].has(iso))) {
+          html += `<span class="cal__dia cal__dia--fechado" title="Dia de semana, fora da regra da casa">${corpo}</span>`;
+        } else if (!livres.length) {
           let motivo = '';
           for (const s of SUITES_INFO) {
             if (mapas.bloqueios[s.numero].has(iso)) { motivo = mapas.bloqueios[s.numero].get(iso); break; }
