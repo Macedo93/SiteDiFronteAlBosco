@@ -22,6 +22,12 @@ const CONFIG = {
     estado: 'ES',
     cep: '29650-000',
   },
+
+  /* Agenda (outro projeto): disponibilidade pública e pré-reserva.
+     A pré-reserva só existe na agenda depois que a branch pre-reserva-agenda
+     for mergeada e deployada; até lá o site cai para o fluxo só-WhatsApp. */
+  availabilityUrl: 'https://agenda-hospedagem.vercel.app/api/availability',
+  preReservaUrl: 'https://agenda-hospedagem.vercel.app/api/pre-reserva',
 };
 
 /* Diária de balcão por suíte, em reais.
@@ -31,6 +37,20 @@ const PRECOS = {
   'Suíte Hidromassagem': 550,
   'Suíte 2': 450,
   'Suíte 3': 450,
+};
+
+/* Número da suíte na agenda (1 = Hidro, 2 e 3 = Suítes 2 e 3).
+   Conferir com o anfitrião se a numeração da agenda mudar. */
+const SUITE_NUMERO = {
+  'Suíte Hidromassagem': 1,
+  'Suíte 2': 2,
+  'Suíte 3': 3,
+};
+
+const SUITE_CAPACIDADE = {
+  'Suíte Hidromassagem': 4,
+  'Suíte 2': 3,
+  'Suíte 3': 3,
 };
 
 /* Base das imagens hospedadas no CDN do Booking. */

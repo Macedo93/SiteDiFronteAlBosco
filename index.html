@@ -513,6 +513,9 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <label for="f-nome">Nome</label>
         <input id="f-nome" name="nome" type="text" required autocomplete="name" placeholder="Seu nome">
 
+        <label for="f-tel">Telefone (WhatsApp)</label>
+        <input id="f-tel" name="telefone" type="tel" required autocomplete="tel" placeholder="(27) 99999-9999">
+
         <div class="fform__row">
           <div>
             <label for="f-in">Check-in</label>
@@ -546,6 +549,12 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <label for="f-msg">Mensagem <span class="opt">(opcional)</span></label>
         <textarea id="f-msg" name="msg" rows="3" placeholder="Alguma observação?"></textarea>
 
+        <div class="calendario" id="calendario" aria-label="Disponibilidade por suíte">
+          <p class="calendario__aviso" id="calendario-aviso">Carregando disponibilidade…</p>
+          <div id="calendario-grade"></div>
+          <p class="calendario__legenda">Verde = noite livre de sexta ou sábado · Cinza = dia de semana, fora da regra da casa · Vermelho = já ocupada. Feriados fora de sexta/sábado vão pelo WhatsApp. A confirmação final é do anfitrião.</p>
+        </div>
+
         <div class="calc" id="calc" hidden>
           <div class="calc__linha">
             <span id="calc-detalhe"></span>
@@ -554,8 +563,9 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
           <p class="calc__obs">Estimativa pela diária de balcão. Confirmamos o valor final no WhatsApp.</p>
         </div>
 
-        <button class="btn btn--solid fform__go" type="submit">Enviar pelo WhatsApp</button>
+        <button class="btn btn--solid fform__go" type="submit">Enviar pré-reserva</button>
         <p class="fform__note" id="fform-note" role="status"></p>
+        <p class="fform__note">Ao enviar, sua pré-reserva vai para a agenda e abrimos o WhatsApp para avisar o anfitrião na hora. Se a agenda estiver fora do ar, enviamos só pelo WhatsApp.</p>
       </form>
     </div>
   </div>

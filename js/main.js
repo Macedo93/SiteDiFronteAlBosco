@@ -91,6 +91,128 @@
   parear($('#q-in'), $('#q-out'));
   parear($('#f-in'), $('#f-out'));
 
+  /* ── Disponibilidade da agenda + pré-reserva ──────────────────
+     A API pública devolve, por suíte, os períodos ocupados (reservas locais
+     + iCal da Booking). O input type="date" nativo não desabilita dias
+     avulsos, por isso a trava real é a validação abaixo + o calendário
+     visual, e a confirmação final é refeita no servidor antes de gravar.
+     Se a API estiver fora do ar, o site NÃO quebra: avisa e o WhatsApp
+     continua funcionando. */
+  let disponibilidade = null;
+  let disponibilidadeAviso = '';
+
+  const diaSemana = (iso) => {
+    const [a, m, d] = iso.split('-').map(Number);
+    return new Date(Date.UTC(a, m - 1, d)).getUTCDay();
+  };
+  const noiteFimDeSemana = (iso) => {
+    const dia = diaSemana(iso);
+    return dia === 5 || dia === 6;
+  };
+  const somarDia = (iso, n) => {
+    const [a, m, d] = iso.split('-').map(Number);
+    const dt = new Date(Date.UTC(a, m - 1, d + n));
+    return dt.toISOString().slice(0, 10);
+  };
+  const noitesOcupadas = (numSuite) => {
+    const ocupadas = new Set();
+    if (!disponibilidade || !disponibilidade.occupied) return ocupadas;
+    const periodos = disponibilidade.occupied[String(numSuite)] || [];
+    periodos.forEach((p) => {
+      let dia = p.checkIn;
+      while (dia < p.checkOut) { ocupadas.add(dia); dia = somarDia(dia, 1); }
+    });
+    return ocupadas;
+  };
+
+  const validarPeriodo = (numSuite, ini, fim) => {
+    if (!ini || !fim) return 'Informe as datas de check-in e check-out.';
+    if (fim <= ini) return 'O check-out precisa ser depois do check-in.';
+    if (noites(ini, fim) > 14) return 'Estadia máxima de 14 noites pelo site. Para estadias maiores, fale com a gente no WhatsApp.';
+    if (ini < hoje) return 'O check-in não pode ser no passado.';
+    if (!noiteFimDeSemana(ini)) return 'Nesta primeira versão, a pré-reserva pelo site é só para check-in de sexta ou sábado. Para feriados e outras datas, fale com a gente no WhatsApp.';
+    if (disponibilidade) {
+      const ocupadas = noitesOcupadas(numSuite);
+      let dia = ini;
+      while (dia < fim) {
+        if (ocupadas.has(dia)) return `A noite de ${dataBr(dia)} já está ocupada para esta suíte. Escolha outro período.`;
+        dia = somarDia(dia, 1);
+      }
+    }
+    return null;
+  };
+
+  const renderCalendario = () => {
+    const grade = $('#calendario-grade');
+    const aviso = $('#calendario-aviso');
+    if (!grade || !aviso) return;
+    const suiteNome = $('#f-s').value;
+    const numSuite = SUITE_NUMERO[suiteNome];
+    if (!numSuite) {
+      aviso.textContent = 'Escolha uma suíte para ver o calendário de disponibilidade.';
+      grade.innerHTML = '';
+      return;
+    }
+    if (!disponibilidade) {
+      aviso.textContent = disponibilidadeAviso || 'Calendário indisponível no momento. Você ainda pode enviar pelo WhatsApp.';
+      grade.innerHTML = '';
+      return;
+    }
+    aviso.textContent = 'Toque numa noite verde para começar a pré-reserva nela.';
+    const ocupadas = noitesOcupadas(numSuite);
+    const meses = [];
+    const base = new Date(hoje + 'T00:00:00Z');
+    for (let off = 0; off < 2; off++) {
+      const ano = base.getUTCFullYear();
+      const mes = base.getUTCMonth() + off;
+      const primeiro = new Date(Date.UTC(ano, mes, 1));
+      const diasNoMes = new Date(Date.UTC(ano, mes + 1, 0)).getUTCDate();
+      const nomeMes = primeiro.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric', timeZone: 'UTC' });
+      let html = `<div class="cal__mes">${nomeMes}</div><div class="cal__grid">`;
+      for (let i = 0; i < primeiro.getUTCDay(); i++) html += '<span class="cal__dia cal__dia--vazio"></span>';
+      for (let d = 1; d <= diasNoMes; d++) {
+        const iso = new Date(Date.UTC(ano, mes, d)).toISOString().slice(0, 10);
+        if (iso < hoje) {
+          html += `<span class="cal__dia cal__dia--fechado">${d}</span>`;
+        } else if (ocupadas.has(iso)) {
+          html += `<span class="cal__dia cal__dia--ocupado" title="Ocupada">${d}</span>`;
+        } else if (!noiteFimDeSemana(iso)) {
+          html += `<span class="cal__dia cal__dia--fechado" title="Fora da regra de fim de semana">${d}</span>`;
+        } else {
+          html += `<button type="button" class="cal__dia cal__dia--livre" data-dia="${iso}" title="Noite livre">${d}</button>`;
+        }
+      }
+      html += '</div>';
+      meses.push(html);
+    }
+    grade.innerHTML = meses.join('');
+    grade.querySelectorAll('[data-dia]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        $('#f-in').value = btn.dataset.dia;
+        $('#f-out').value = somarDia(btn.dataset.dia, 1);
+        pintarCalc();
+        document.getElementById('fform-note').textContent = '';
+      });
+    });
+  };
+
+  const carregarDisponibilidade = async () => {
+    try {
+      const ctrl = new AbortController();
+      const timer = setTimeout(() => ctrl.abort(), 8000);
+      const resp = await fetch(CONFIG.availabilityUrl, { signal: ctrl.signal, headers: { Accept: 'application/json' } });
+      clearTimeout(timer);
+      if (!resp.ok) throw new Error('availability HTTP ' + resp.status);
+      disponibilidade = await resp.json();
+      disponibilidadeAviso = '';
+    } catch {
+      disponibilidade = null;
+      disponibilidadeAviso = 'Não foi possível carregar o calendário agora. Você ainda pode enviar pelo WhatsApp, e confirmamos a disponibilidade por lá.';
+    }
+    renderCalendario();
+  };
+  carregarDisponibilidade();
+
   /* ── Formulário rápido do hero ──────────────────────────── */
 
   $('#quote').addEventListener('submit', (e) => {
@@ -142,11 +264,13 @@
 
   ['#f-in', '#f-out', '#f-s', '#f-h'].forEach((s) => {
     $(s).addEventListener('change', pintarCalc);
+    $(s).addEventListener('change', renderCalendario);
   });
 
-  $('#fform').addEventListener('submit', (e) => {
+  $('#fform').addEventListener('submit', async (e) => {
     e.preventDefault();
     const nome = $('#f-nome').value.trim();
+    const telefone = ($('#f-tel') ? $('#f-tel').value : '').replace(/\D/g, '');
     const ini = $('#f-in').value;
     const fim = $('#f-out').value;
 
@@ -158,19 +282,88 @@
     const n = noites(ini, fim);
     const est = estimar();
     const suite = $('#f-s').value;
+    const hospedesRaw = $('#f-h').value;
+    const hospedes = hospedesRaw === '5 ou mais' ? 5 : Number(hospedesRaw);
 
-    nota.textContent = 'Abrindo o WhatsApp…';
-    abrirWa(
+    const textoWa = (extra) =>
       `Olá! Meu nome é ${nome} e vim pelo site da Di Fronte al Bosco.\n\n` +
       `Gostaria de reservar a ${suite === 'Sem preferência' ? 'suíte (sem preferência)' : suite}\n` +
       `Check-in: ${dataBr(ini)}\n` +
       `Check-out: ${dataBr(fim)}\n` +
       `Noites: ${n}\n` +
-      `Hóspedes: ${$('#f-h').value}\n` +
+      `Hóspedes: ${hospedesRaw}\n` +
+      (telefone ? `Telefone: ${telefone}\n` : '') +
       (est ? `Valor estimado: ${reais(est.total)} (${est.n} × ${reais(est.diaria)})\n` : '') +
       (msg ? `\nObservação: ${msg}\n` : '') +
-      `\nPode confirmar a disponibilidade?`
-    );
+      (extra ? `\n${extra}\n` : '') +
+      `\nPode confirmar a disponibilidade?`;
+
+    // Sem suíte definida ou acima da capacidade, não dá para gravar pré-reserva:
+    // vai só pelo WhatsApp, como antes.
+    const numSuite = SUITE_NUMERO[suite];
+    if (!numSuite) {
+      nota.textContent = 'Sem suíte definida, enviamos só pelo WhatsApp.';
+      abrirWa(textoWa(''));
+      return;
+    }
+    if (hospedes > SUITE_CAPACIDADE[suite]) {
+      nota.textContent = 'Para mais hóspedes que a capacidade da suíte, enviamos só pelo WhatsApp.';
+      abrirWa(textoWa(''));
+      return;
+    }
+
+    // Validação local (calendário + fim de semana). Se falhar, não envia nada:
+    // o hóspede precisa escolher outro período, em vez de mandar um pedido inválido.
+    const erroPeriodo = validarPeriodo(numSuite, ini, fim);
+    if (erroPeriodo) { nota.textContent = erroPeriodo; return; }
+    if (!/^\d{10,13}$/.test(telefone)) {
+      nota.textContent = 'Informe um telefone válido, com DDD, para gravar a pré-reserva.';
+      if ($('#f-tel')) $('#f-tel').focus();
+      return;
+    }
+
+    const botao = e.target.querySelector('button[type="submit"]');
+    if (botao) botao.disabled = true;
+    nota.textContent = 'Enviando sua pré-reserva…';
+    let gravada = null;
+    let erroApi = '';
+    try {
+      const ctrl = new AbortController();
+      const timer = setTimeout(() => ctrl.abort(), 15000);
+      const resp = await fetch(CONFIG.preReservaUrl, {
+        method: 'POST',
+        signal: ctrl.signal,
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify({
+          name: nome,
+          phone: telefone,
+          suite: numSuite,
+          guests: hospedes,
+          checkIn: ini,
+          checkOut: fim,
+          observation: msg,
+        }),
+      });
+      clearTimeout(timer);
+      const dados = await resp.json().catch(() => ({}));
+      if (resp.ok && dados.success) {
+        gravada = dados;
+      } else {
+        erroApi = (dados && dados.error) || `a agenda respondeu ${resp.status}`;
+      }
+    } catch {
+      erroApi = 'a agenda está fora do ar no momento';
+    }
+    if (botao) botao.disabled = false;
+
+    if (gravada) {
+      nota.textContent = `Pré-reserva recebida! Aguardando confirmação do anfitrião. Abrimos o WhatsApp para avisar na hora.`;
+      abrirWa(textoWa(`Pré-reserva registrada na agenda, aguardando confirmação.`));
+    } else {
+      // Fallback exigido: a pré-reserva NÃO foi gravada, mas o pedido não se perde.
+      nota.textContent = `Não foi possível gravar a pré-reserva na agenda (${erroApi}). Enviamos pelo WhatsApp mesmo assim.`;
+      abrirWa(textoWa('A pré-reserva não foi gravada na agenda, por favor confirme por aqui.'));
+    }
   });
 
   /* ── Comodidades ────────────────────────────────────────── */
