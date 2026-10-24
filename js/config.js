@@ -23,9 +23,8 @@ const CONFIG = {
     cep: '29650-000',
   },
 
-  /* Agenda (outro projeto): disponibilidade pública e pré-reserva.
-     A pré-reserva só existe na agenda depois que a branch pre-reserva-agenda
-     for mergeada e deployada; até lá o site cai para o fluxo só-WhatsApp. */
+  /* Agenda (outro projeto): disponibilidade pública e pré-reserva, já no ar.
+     Se a agenda estiver fora do ar, o site cai para o fluxo só-WhatsApp. */
   availabilityUrl: 'https://agenda-hospedagem.vercel.app/api/availability',
   preReservaUrl: 'https://agenda-hospedagem.vercel.app/api/pre-reserva',
 };

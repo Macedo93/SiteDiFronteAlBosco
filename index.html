@@ -538,7 +538,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
           <div>
             <label for="f-s">Suíte</label>
             <select id="f-s" name="suite">
-              <option>Sem preferência</option>
+              <option>Escolha nas suítes livres abaixo</option>
               <option>Suíte Hidromassagem</option>
               <option>Suíte 2</option>
               <option>Suíte 3</option>
@@ -549,10 +549,11 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <label for="f-msg">Mensagem <span class="opt">(opcional)</span></label>
         <textarea id="f-msg" name="msg" rows="3" placeholder="Alguma observação?"></textarea>
 
-        <div class="calendario" id="calendario" aria-label="Disponibilidade por suíte">
+        <div class="calendario" id="calendario" aria-label="Disponibilidade das 3 suítes">
           <p class="calendario__aviso" id="calendario-aviso">Carregando disponibilidade…</p>
           <div id="calendario-grade"></div>
-          <p class="calendario__legenda">Verde = noite livre de sexta ou sábado, ou feriado liberado pelo anfitrião · Cinza = dia de semana, fora da regra da casa · Vermelho = já ocupada ou bloqueada pelo anfitrião (passe o mouse para ver o motivo). A confirmação final é do anfitrião.</p>
+          <div class="suites-livres" id="suites-livres"></div>
+          <p class="calendario__legenda">Verde = pelo menos uma suíte livre na noite · Pontos abaixo do dia, na ordem Hidro, Suíte 2, Suíte 3: verde = suíte livre, vermelho = ocupada ou bloqueada, cinza = dia de semana fechado · Vermelho = as 3 suítes ocupadas · Cinza = dia de semana, fora da regra da casa · Tracejado = feriado liberado pelo anfitrião. A confirmação final é do anfitrião.</p>
         </div>
 
         <div class="calc" id="calc" hidden>

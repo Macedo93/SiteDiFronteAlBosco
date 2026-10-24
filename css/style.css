@@ -1057,3 +1057,21 @@ p { margin: 0 0 1.1rem; }
   .ft__base { flex-direction: column; }
   .dist li { grid-template-columns: 5.5rem 1fr; }
 }
+
+.cal__dia { display: flex; flex-direction: column; align-items: center; gap: .15rem; }
+.cal__pontos { display: flex; gap: 2px; justify-content: center; }
+.cal__ponto { width: 6px; height: 6px; border-radius: 50%; background: #ccc; }
+.cal__ponto--livre { background: var(--verde); }
+.cal__ponto--ocupado { background: #b85454; }
+.cal__ponto--fechado { background: #bbb; }
+.suites-livres { margin-top: .8rem; display: grid; gap: .5rem; }
+.suites-livres__titulo { font-weight: 700; color: var(--verde-esc); margin: 0; font-size: .9rem; }
+.suites-livres__aviso { font-size: .84rem; color: var(--cinza); margin: 0; }
+.suite-livre { display: grid; gap: .15rem; text-align: left; background: var(--branco); border: 1px solid var(--bege); border-radius: 10px; padding: .7rem .9rem; cursor: pointer; font: inherit; color: var(--grafite); }
+.suite-livre:hover { border-color: var(--verde); }
+.suite-livre--escolhida { border-color: var(--verde); background: #e8f5e9; }
+.suite-livre__nome { font-weight: 700; color: var(--verde-esc); }
+.suite-livre__det { font-size: .82rem; color: var(--cinza); }
+.suite-livre__preco { font-weight: 700; }
+.suite-livre__preco small { font-weight: 400; color: var(--cinza); }
+.suite-livre__acao { font-size: .82rem; color: var(--verde); font-weight: 700; }
