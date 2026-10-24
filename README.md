@@ -26,7 +26,11 @@ cada noite tem pontos para Hidro, Suíte 2 e Suíte 3 (verde = livre,
 vermelho = ocupada ou bloqueada, cinza = dia de semana fechado). O hóspede
 escolhe as datas primeiro e, abaixo do calendário, aparecem só as suítes
 livres para todo o período, com preço total. Ao escolher uma suíte e enviar,
-o site chama a pré-reserva (`CONFIG.preReservaUrl`).
+o site chama a pré-reserva (`CONFIG.preReservaUrl`). O calendário mostra
+UM mês por vez, com setas para navegar até 11 meses à frente. O formulário
+rápido do topo (`#quote`) agora tem suíte e, em vez de ir direto para o
+WhatsApp, preenche o formulário completo com datas, hóspedes e suíte e rola
+até ele, com o calendário já no mês do check-in.
 
 - Se a pré-reserva gravar na agenda, o site mostra a confirmação de
   "pré-reserva recebida, aguardando confirmação do anfitrião" e abre o
