@@ -67,3 +67,10 @@ sem mexer no código do site:
 - Cada página tem JSON-LD HotelRoom (preço, capacidade, camas) e BreadcrumbList, e está no sitemap.xml.
 - Os cards da página inicial ligam para essas páginas ("Ver a página da suíte").
 - As fotos seguem o mesmo agrupamento do site principal (banheiro com hidromassagem certo; quartos das Suítes 2 e 3 são hipótese visual, conferir com o anfitrião).
+
+
+## Calendário minimalista no topo
+
+- O formulário do topo não tem mais campos de data: hóspedes, suíte e um calendário de 1 mês, com setas, sem pontos por suíte (a suíte já está no campo ao lado, então o calendário mostra só livre ou não).
+- Toque 1: check-in. Toque 2, depois do check-in: check-out. O período só é aceito se todas as noites estiverem livres para a suíte escolhida, ou para alguma suíte quando a escolha é Qualquer suíte. Trocar a suíte ou os hóspedes limpa as datas.
+- O botão "Ver suítes livres" só funciona com as duas datas escolhidas; sem datas, mostra um aviso no próprio topo, em vez de rolar para o formulário completo com datas vazias.
