@@ -105,14 +105,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
     <!-- Formulário rápido → formulário completo -->
     <form class="quote" id="quote" novalidate>
-      <div class="quote__f">
-        <label for="q-in">Check-in</label>
-        <input type="date" id="q-in" name="checkin" required>
-      </div>
-      <div class="quote__f">
-        <label for="q-out">Check-out</label>
-        <input type="date" id="q-out" name="checkout" required>
-      </div>
+      <input type="hidden" id="q-in" name="checkin">
+      <input type="hidden" id="q-out" name="checkout">
       <div class="quote__f">
         <label for="q-h">Hóspedes</label>
         <select id="q-h" name="hospedes">
@@ -132,6 +126,11 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
           <option>Suíte 3</option>
         </select>
       </div>
+      <div class="quote__cal" id="quote-cal">
+        <p class="quote__cal-aviso" id="quote-cal-aviso">Carregando disponibilidade…</p>
+        <div id="quote-cal-grade"></div>
+      </div>
+      <p class="quote__aviso" id="quote-aviso" role="status"></p>
       <button class="btn btn--solid quote__go" type="submit">Ver suítes livres</button>
       <p class="quote__note">Complete sua pré-reserva abaixo, sem taxas de plataforma.</p>
     </form>
