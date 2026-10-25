@@ -301,7 +301,7 @@ p { margin: 0 0 1.1rem; }
   border-radius: var(--r);
   padding: 1.4rem;
   display: grid;
-  grid-template-columns: repeat(4, 1fr) auto;
+  grid-template-columns: 1fr 1fr;
   gap: 1rem;
   align-items: end;
   text-align: left;
@@ -319,7 +319,17 @@ p { margin: 0 0 1.1rem; }
   color: var(--grafite);
   width: 100%;
 }
-.quote__go { align-self: end; height: 46px; }
+.quote__go { grid-column: 1 / -1; width: 100%; height: 46px; }
+.quote__cal { grid-column: 1 / -1; background: rgba(255,255,255,.94); border-radius: 12px; padding: .8rem; color: var(--grafite); }
+.quote__cal-aviso { font-size: .8rem; color: var(--cinza); margin: 0 0 .4rem; text-align: center; }
+.quote__cal .cal__nav { margin: 0 0 .3rem; }
+.quote__cal .cal__semana { display: grid; grid-template-columns: repeat(7, 1fr); gap: .3rem; text-align: center; font-size: .68rem; color: #999; margin-bottom: .2rem; }
+.quote__cal .cal__dia { border: 0; background: transparent; padding: .45rem .1rem; font-size: .85rem; }
+.quote__cal .cal__dia--livre { background: #e8f5e9; color: var(--verde-esc); font-weight: 700; }
+.quote__cal .cal__dia--sel { background: var(--verde); color: #fff; font-weight: 700; }
+.quote__cal .cal__dia--meio { background: #e8f5e9; }
+.quote__cal .cal__dia--ocupado, .quote__cal .cal__dia--fechado { color: #bbb; background: transparent; text-decoration: none; }
+.quote__aviso { grid-column: 1 / -1; margin: 0; font-size: .8rem; color: var(--terra); text-align: center; min-height: 1.2em; }
 .quote__note {
   grid-column: 1 / -1;
   margin: .2rem 0 0;

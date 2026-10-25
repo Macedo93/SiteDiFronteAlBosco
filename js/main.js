@@ -332,6 +332,101 @@
     });
   };
 
+  /* ── Calendário minimalista do topo ────────────────────────
+     Sem campos de data e sem pontos por suíte: a suíte já está no
+     campo ao lado, então o calendário mostra só livre ou não.
+     Toque 1: check-in. Toque 2, depois do check-in: check-out. */
+  let mesHeroOffset = 0;
+  const heroSuiteNome = () => { const el = $('#q-s'); return el && el.value ? el.value : null; };
+  const heroSuiteNumero = () => { const n = heroSuiteNome(); return n ? SUITE_NUMERO[n] : null; };
+  const heroHospedes = () => { const el = $('#q-h'); const h = el ? el.value : '2'; return h === '5+' ? 5 : Number(h); };
+  const heroLivre = (iso, mapas) => {
+    const num = heroSuiteNumero();
+    if (num) {
+      if (heroHospedes() > SUITE_CAPACIDADE[heroSuiteNome()]) return false;
+      return pontoSuite(num, iso, mapas) === 'livre';
+    }
+    return suitesLivresNoite(iso, mapas).length > 0;
+  };
+  const heroPeriodoValido = (ini, fim) => {
+    if (!ini || !fim || fim <= ini) return false;
+    const num = heroSuiteNumero();
+    if (num) {
+      if (heroHospedes() > SUITE_CAPACIDADE[heroSuiteNome()]) return false;
+      const mapas = mapasDisponibilidade();
+      let dia = ini;
+      while (dia < fim) { if (pontoSuite(num, dia, mapas) !== 'livre') return false; dia = somarDia(dia, 1); }
+      return true;
+    }
+    return suitesLivresPeriodo(ini, fim, heroHospedes()).length > 0;
+  };
+  const renderHeroCalendario = () => {
+    const grade = $('#quote-cal-grade');
+    const aviso = $('#quote-cal-aviso');
+    if (!grade || !aviso) return;
+    if (!disponibilidade) {
+      aviso.textContent = 'Calendário indisponível no momento. Role até o formulário completo para enviar pelo WhatsApp.';
+      grade.innerHTML = '';
+      return;
+    }
+    aviso.textContent = 'Toque numa noite livre para começar.';
+    const mapas = mapasDisponibilidade();
+    const baseHoje = new Date(hoje + 'T00:00:00Z');
+    const primeiro = new Date(Date.UTC(baseHoje.getUTCFullYear(), baseHoje.getUTCMonth() + mesHeroOffset, 1));
+    const ano = primeiro.getUTCFullYear();
+    const mes = primeiro.getUTCMonth();
+    const diasNoMes = new Date(Date.UTC(ano, mes + 1, 0)).getUTCDate();
+    const nomeMes = primeiro.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric', timeZone: 'UTC' });
+    const ini = $('#q-in').value;
+    const fim = $('#q-out').value;
+    const avisoEl = $('#quote-aviso');
+    if (avisoEl) {
+      const num = heroSuiteNumero();
+      avisoEl.textContent = (num && heroHospedes() > SUITE_CAPACIDADE[heroSuiteNome()])
+        ? `A ${heroSuiteNome()} acomoda até ${SUITE_CAPACIDADE[heroSuiteNome()]} hóspedes.`
+        : '';
+    }
+    let html = `<div class="cal__nav"><button type="button" class="cal__navbtn" data-hero-mes="-1" ${mesHeroOffset <= 0 ? 'disabled' : ''} aria-label="Mês anterior">‹</button><span class="cal__mes">${nomeMes}</span><button type="button" class="cal__navbtn" data-hero-mes="1" ${mesHeroOffset >= 11 ? 'disabled' : ''} aria-label="Próximo mês">›</button></div><div class="cal__semana"><span>D</span><span>S</span><span>T</span><span>Q</span><span>Q</span><span>S</span><span>S</span></div><div class="cal__grid">`;
+    for (let i = 0; i < primeiro.getUTCDay(); i++) html += '<span class="cal__dia cal__dia--vazio"></span>';
+    for (let d = 1; d <= diasNoMes; d++) {
+      const iso = new Date(Date.UTC(ano, mes, d)).toISOString().slice(0, 10);
+      if (iso < hoje) { html += `<span class="cal__dia cal__dia--fechado">${d}</span>`; continue; }
+      const livre = heroLivre(iso, mapas);
+      let cls = livre ? 'cal__dia--livre' : 'cal__dia--fechado';
+      if (ini && iso === ini) cls = 'cal__dia--sel';
+      else if (fim && iso === fim) cls = 'cal__dia--sel';
+      else if (ini && fim && iso > ini && iso < fim) cls = 'cal__dia--meio';
+      if (!livre) html += `<span class="cal__dia ${cls}">${d}</span>`;
+      else html += `<button type="button" class="cal__dia ${cls}" data-hero-dia="${iso}">${d}</button>`;
+    }
+    html += '</div>';
+    grade.innerHTML = html;
+    grade.querySelectorAll('[data-hero-mes]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        mesHeroOffset = Math.min(11, Math.max(0, mesHeroOffset + Number(btn.dataset.heroMes)));
+        renderHeroCalendario();
+      });
+    });
+    grade.querySelectorAll('[data-hero-dia]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const dia = btn.dataset.heroDia;
+        const iniAtual = $('#q-in').value;
+        const fimAtual = $('#q-out').value;
+        if (!iniAtual || fimAtual) { $('#q-in').value = dia; $('#q-out').value = ''; }
+        else if (dia <= iniAtual) { $('#q-in').value = dia; $('#q-out').value = ''; }
+        else if (heroPeriodoValido(iniAtual, dia)) { $('#q-out').value = dia; }
+        else {
+          $('#q-out').value = '';
+          renderHeroCalendario();
+          const a2 = $('#quote-aviso');
+          if (a2) a2.textContent = 'Alguma noite desse período está ocupada para a suíte escolhida. Escolha outro check-out.';
+          return;
+        }
+        renderHeroCalendario();
+      });
+    });
+  };
+
   const carregarDisponibilidade = async () => {
     try {
       const ctrl = new AbortController();
@@ -347,6 +442,7 @@
     }
     renderCalendario();
     renderSuitesLivres();
+    renderHeroCalendario();
   };
   carregarDisponibilidade();
 
@@ -358,22 +454,33 @@
     const fim = $('#q-out').value;
     const h = $('#q-h').value;
     const suite = $('#q-s') ? $('#q-s').value : '';
-    if (ini) $('#f-in').value = ini;
-    if (fim) $('#f-out').value = fim;
+    const avisoEl = $('#quote-aviso');
+    if (!ini || !fim) {
+      if (avisoEl) avisoEl.textContent = 'Escolha as datas no calendário acima para ver as suítes livres.';
+      return;
+    }
+    $('#f-in').value = ini;
+    $('#f-out').value = fim;
     if (h) $('#f-h').value = h === '5+' ? '5 ou mais' : h;
     $('#f-s').value = suite || 'Escolha nas suítes livres abaixo';
-    if (ini) {
-      const [a, m] = ini.split('-').map(Number);
-      const baseHoje = new Date(hoje + 'T00:00:00Z');
-      const off = (a - baseHoje.getUTCFullYear()) * 12 + ((m - 1) - baseHoje.getUTCMonth());
-      mesCalendarioOffset = Math.min(11, Math.max(0, off));
-    }
+    const [a, m] = ini.split('-').map(Number);
+    const baseHoje = new Date(hoje + 'T00:00:00Z');
+    const off = (a - baseHoje.getUTCFullYear()) * 12 + ((m - 1) - baseHoje.getUTCMonth());
+    mesCalendarioOffset = Math.min(11, Math.max(0, off));
     pintarCalc();
     renderCalendario();
     renderSuitesLivres();
     const destino = document.getElementById('fform');
     if (destino) destino.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    if (!ini || !fim) document.getElementById('fform-note').textContent = 'Escolha as datas no calendário para ver as suítes livres.';
+  });
+
+  ['#q-s', '#q-h'].forEach((s) => {
+    const el = $(s);
+    if (el) el.addEventListener('change', () => {
+      $('#q-in').value = '';
+      $('#q-out').value = '';
+      renderHeroCalendario();
+    });
   });
 
   /* ── Formulário completo + calculadora de diárias ───────── */
