@@ -726,6 +726,10 @@
      'Sim, de qualquer idade. <strong>Cama extra gratuita</strong> mediante pedido e sujeita a disponibilidade. Não dispomos de berço. A partir de 18 anos, contam como adultos.'],
     ['Como funciona o cancelamento?',
      'Pela legislação brasileira, o cancelamento é <strong>gratuito até 7 dias após você fazer a reserva</strong>. Depois desse prazo, vale a política da tarifa escolhida — sempre combinada com você antes de confirmar.'],
+    ['A casa fica perto do centro de Santa Teresa?',
+     'Sim, cerca de <strong>900 m do centro histórico e da Rua do Lazer</strong> — dá para ir e voltar caminhando. O aeroporto de Vitória fica a cerca de 70 km.'],
+    ['Quantas pessoas cabem em cada suíte?',
+     'A <strong>Suíte Hidromassagem recebe até 4 hóspedes</strong> e as <strong>Suítes 2 e 3 recebem até 3 cada</strong>. No total, a casa recebe até 10 hóspedes.'],
   ];
 
   $('#faq-lista').innerHTML = FAQ.map(([p, r], i) =>
