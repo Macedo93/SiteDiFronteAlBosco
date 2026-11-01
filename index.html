@@ -27,14 +27,13 @@
 <meta name="twitter:image:alt" content="Di Fronte al Bosco — piscina e áreas de convivência da casa em Santa Teresa, ES">
 
 <link rel="icon" type="image/svg+xml" href="img/favicon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="img/favicon-32.png">
+<link rel="apple-touch-icon" href="img/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<meta name="theme-color" content="#3a5a40">
 
-<!-- Google Tag Manager -->
-<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-})(window,document,'script','dataLayer','GTM-WN5D63Q2');</script>
-<!-- End Google Tag Manager -->
+<!-- GTM só carrega após o aceite no banner de cookies (ver js/site.js) -->
+<script>try{if(localStorage.getItem('dfb-consent')==='accepted'){window.dataLayer=window.dataLayer||[];window.dataLayer.push({'gtm.start':new Date().getTime(),event:'gtm.js'});var s=document.createElement('script');s.async=true;s.src='https://www.googletagmanager.com/gtm.js?id=GTM-WN5D63Q2';document.head.appendChild(s);}}catch(e){}</script>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -42,10 +41,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-<!-- Google Tag Manager (noscript) -->
-<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-WN5D63Q2"
-height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-<!-- End Google Tag Manager (noscript) -->
+<div class="load-screen" aria-hidden="true"><p>di fronte al bosco</p><span>Carregando…</span></div>
 
 <a class="skip" href="#conteudo">Pular para o conteúdo</a>
 
@@ -522,10 +518,12 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <h3>Solicite sua reserva</h3>
 
         <label for="f-nome">Nome</label>
-        <input id="f-nome" name="nome" type="text" required autocomplete="name" placeholder="Seu nome">
+        <input id="f-nome" name="nome" type="text" required autocomplete="name" placeholder="Seu nome" aria-describedby="err-nome">
+          <p class="f-erro" id="err-nome" role="alert" hidden></p>
 
         <label for="f-tel">Telefone (WhatsApp)</label>
-        <input id="f-tel" name="telefone" type="tel" required autocomplete="tel" placeholder="(27) 99999-9999">
+        <input id="f-tel" name="telefone" type="tel" required autocomplete="tel" placeholder="(27) 99999-9999" aria-describedby="err-tel">
+          <p class="f-erro" id="err-tel" role="alert" hidden></p>
 
         <div class="fform__row">
           <div>
@@ -537,6 +535,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             <input id="f-out" name="checkout" type="date" required>
           </div>
         </div>
+        <p class="f-erro" id="err-datas" role="alert" hidden></p>
 
         <div class="fform__row">
           <div>
@@ -548,7 +547,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
           </div>
           <div>
             <label for="f-s">Suíte</label>
-            <select id="f-s" name="suite">
+            <select id="f-s" name="suite" aria-describedby="err-suite">
+
               <option>Escolha nas suítes livres abaixo</option>
               <option>Suíte Hidromassagem</option>
               <option>Suíte 2</option>
@@ -557,6 +557,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
           </div>
         </div>
 
+        <p class="f-erro" id="err-suite" role="alert" hidden></p>
         <label for="f-msg">Mensagem <span class="opt">(opcional)</span></label>
         <textarea id="f-msg" name="msg" rows="3" placeholder="Alguma observação?"></textarea>
 
@@ -616,6 +617,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
   <div class="wrap ft__base">
     <p>© <span id="ano"></span> Di Fronte al Bosco · Santa Teresa, ES</p>
+    <p><a href="/privacidade/">Privacidade</a> · <a href="/termos/">Termos de uso</a> · <a href="#" data-cookie-reabrir>Preferências de cookies</a></p>
     <p class="ft__1874">Santa Teresa · 1874 · 1ª cidade de colonização italiana do Brasil</p>
   </div>
 </footer>
@@ -790,6 +792,17 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 }
 </script>
 
+
+<div class="cookie" id="cookie" hidden role="dialog" aria-label="Preferências de cookies">
+  <p>Usamos cookies só para medir visitas (Google Analytics, via Tag Manager) e melhorar o site. Sem a sua aceitação, o Analytics não é carregado. Saiba mais na <a href="/privacidade/">Política de Privacidade</a>.</p>
+  <div class="cookie__botoes"><button class="btn btn--solid" id="cookie-aceitar" type="button">Aceitar</button><button class="btn btn--out" id="cookie-recusar" type="button">Recusar</button></div>
+</div>
+
+<nav class="cta-fixo" aria-label="Ações rápidas">
+  <a class="btn btn--solid" href="#reservar">Reservar</a>
+  <a class="btn btn--out" href="https://wa.me/5527997574050">WhatsApp</a>
+</nav>
+<script src="js/site.js"></script>
 <script src="js/config.js"></script>
 <script src="js/main.js"></script>
 </body>
