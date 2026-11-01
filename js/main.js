@@ -781,6 +781,16 @@
     ['Casa bonita, aconchegante e bem arrumada. Ótima disponibilidade de utensílios domésticos como objetos de cozinha e quarto. A casa fica na subida de uma rua uma pouco íngrime. Apesar do checkout ser um pouco cedo, deu para aproveitar. Já se tornou a minha pousada favorita da cidade.', 'Luana Raquelly', '5/5 · 2 anos atrás', 'google'],
     ['Excelente lugar. Tudo foi bom. O responsável é super atencioso.', 'Luis Eduardo Machado Mattos', '5/5 · 3 meses atrás', 'google'],
     ['A casa fica em uma localização ótima e uma rua muito tranquila. Muito organizada e muito bem equipada, vários utensílios, muito aconchegante. Todas as minhas dúvidas ele foi muito solicito, explicando tudo. Com certeza está na minha lista na próxima visita a cidade.', 'Alderlany Reis', '5/5 · 1 ano atrás', 'google'],
+    ['local muito limpo e bonito, melhor do que nas fotos. Anfitrião respondendo rapidamente, atendendo a todas as demandas que pudessem surgir. No mais, a estadia foi impecável. Recomendarei a amigos e familiares.', 'Angelo', '5/5 · mai/2026', 'airbnb'],
+    ['Estadia em família muito boa. Local tranquilo e de fácil acesso.', 'Sandro', '5/5 · jun/2026', 'airbnb'],
+    ['Lugar maravilhoso mais bonito que nas fotos rs, tudo muito limpo, giovanni nos atendeu super bem e nos deixou bem avontade...', 'Dhebora Crystina', '5/5 · jun/2025', 'airbnb'],
+    ['Tudo certo!!! localização top casa muito limpa!!! Parabéns!!!', 'Ricardo', '5/5 · abr/2026', 'airbnb'],
+    ['A casa é lindíssima, com uma decoração muito bonita, corresponde ao anunciado!', 'Flayker', '5/5 · jun/2024', 'airbnb'],
+    ['Tudo certo, casa muito bonita tudo limpinho, só senti falta de uma tv na suite, no mais tudo ok, recomendo!!', 'Jorge', '5/5 · mai/2024', 'airbnb'],
+    ['Excelente recepção, acomodação, tudo limpo, anfitriã muito solicita, educada, gentil, flexibilidade no checkin/out, adoramos tudo e pretendemos voltar.', 'Dalila', '5/5 · mar/2024', 'airbnb'],
+    ['Parabéns 👏 lugar maravilhoso, a casa muito aconchegante e tranquila. Super indico ☺️ obrigada por nós receber com tanto carinho e atenção ☺️ que Deus os abençoe!', 'Yara', '5/5 · jan/2024', 'airbnb'],
+    ['A casa é excelente, o quarto confortável, a banheira de hidromassagem funcionou perfeitamente e o anfitrião já deixou lareira preparada para ser acesa, passamos um fim de semana em casal, foi maravilhoso e inesquecível.', 'Guilherme', '5/5 · jun/2023', 'airbnb'],
+    ['Que experiência incrível, a casa é linda e os anfitriões maravilhosos, impecáveis e detalhistas. Conseguiu superar minhas expectativas, com ambiente confortável, com privacidade e bom gosto. Rua bem tranquila e próxima a natureza. Gostei muito!', 'Arthur', '5/5 · jun/2023', 'airbnb'],
   ];
 
   const DEP_ROTULO = { booking: 'Booking.com', airbnb: 'Airbnb', google: 'Google' };
