@@ -761,18 +761,84 @@
 
   /* ── Depoimentos ────────────────────────────────────────── */
 
+  /* ── Depoimentos ──────────────────────────────────────────
+     Formato: [texto, nome, detalhe, plataforma]
+     plataforma: 'booking' | 'airbnb' | 'google'
+     Para adicionar um depoimento do Airbnb ou do Google, copie o texto
+     exatamente como publicado na plataforma e acrescente uma linha aqui
+     com a plataforma certa — o filtro e o selo do cartão atualizam sozinhos.
+     Não invente depoimentos: só entra aqui o que foi publicado de verdade. */
   const DEPOIMENTOS = [
-    ['A casa é excelente! O quarto é confortável e limpo. A área de convivência é ampla e tem de tudo. Fora que o responsável é super atencioso.', 'Dudu', 'Brasil'],
-    ['A casa é linda, uma construção um pouco antiga com uma decoração linda. Tudo muito conservado e limpo, além da tranquilidade do local.', 'Rosimara', 'Itália'],
-    ['Santa Teresa é uma cidade que guarda histórias de família e infância. Agora adicionamos a recordação desta belíssima casa, do silêncio do bosque e da proximidade com o centro!', 'Victorio', 'Brasil'],
-    ['Ambiente super aconchegante, limpo e organizado, pensado para o conforto do hóspede. Local tranquilo e fácil acesso.', 'Rosania', 'Brasil'],
-    ['Excelente casa, excelente suíte. Muito espaço, beleza e sossego.', 'Amarildo', 'Brasil'],
-    ['Super agradável, aconchegante. Anfitrião muito receptivo e atencioso. Voltarei com certeza.', 'Helio', 'Brasil'],
+    ['A casa é excelente! O quarto é confortável e limpo. A área de convivência é ampla e tem de tudo. Fora que o responsável é super atencioso.', 'Dudu', 'Brasil', 'booking'],
+    ['A casa é linda, uma construção um pouco antiga com uma decoração linda. Tudo muito conservado e limpo, além da tranquilidade do local.', 'Rosimara', 'Itália · 10/10 · set/2025', 'booking'],
+    ['Santa Teresa é uma cidade que guarda histórias de família e infância. Agora adicionamos a recordação desta belíssima casa, do silêncio do bosque e da proximidade com o centro!', 'Victorio', 'Brasil', 'booking'],
+    ['Ambiente super aconchegante, limpo e organizado, pensado para o conforto do hóspede. Local tranquilo e fácil acesso.', 'Rosania', 'Brasil', 'booking'],
+    ['Excelente casa, excelente suíte. Muito espaço, beleza e sossego.', 'Amarildo', 'Brasil', 'booking'],
+    ['Super agradável, aconchegante. Anfitrião muito receptivo e atencioso. Voltarei com certeza.', 'Helio', 'Brasil', 'booking'],
+    ['Lugar ótimo! A casa é maravilhosa 😍 e tem tudo que vc precisa! O Pablo muito prestativo! Uma pena que fiquei só um dia 😔 voltarei com certeza!!', 'Luciene Pinheiro', '10/10 · ago/2025', 'booking'],
   ];
 
-  $('#deps').innerHTML = DEPOIMENTOS.map(([txt, nome, pais]) =>
-    `<article class="dep"><p>${txt}</p><p class="dep__who">${nome}</p><p class="dep__from">${pais} · Booking.com</p></article>`
-  ).join('');
+  const DEP_ROTULO = { booking: 'Booking.com', airbnb: 'Airbnb', google: 'Google' };
+  const DEP_LINK = { booking: CONFIG.booking, google: CONFIG.googleMaps };
+  const depTrack = $('#dep-track'), depDots = $('#dep-dots'), depStatus = $('#dep-status');
+  const depCar = $('#dep-car');
+  let depFiltro = 'todas', depIdx = 0, depTimer = null;
+  const depSemAnim = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const depPorVez = () => (window.innerWidth >= 1000 ? 3 : window.innerWidth >= 700 ? 2 : 1);
+  const depLista = () => (depFiltro === 'todas' ? DEPOIMENTOS : DEPOIMENTOS.filter((d) => d[3] === depFiltro));
+
+  const depRender = () => {
+    const lista = depLista(), porVez = depPorVez();
+    const maxIdx = Math.max(0, lista.length - porVez);
+    depIdx = Math.min(depIdx, maxIdx);
+    if (!lista.length) {
+      const link = DEP_LINK[depFiltro];
+      depTrack.innerHTML = `<div class="dep-slide"><article class="dep dep--vazio"><p>Os depoimentos do ${DEP_ROTULO[depFiltro]} ainda não foram copiados para cá.</p>${link ? `<p><a class="lnk" href="${link}" target="_blank" rel="noopener">Ver as avaliações no ${DEP_ROTULO[depFiltro]}</a></p>` : `<p>Em breve eles aparecem aqui, no mesmo carrossel.</p>`}</article></div>`;
+      depTrack.style.transform = 'translateX(0)';
+      depDots.innerHTML = '';
+      depStatus.textContent = `Nenhum depoimento do ${DEP_ROTULO[depFiltro]} por enquanto.`;
+      return;
+    }
+    depTrack.innerHTML = lista.map(([txt, nome, detalhe, plat]) =>
+      `<div class="dep-slide"><article class="dep"><span class="dep__plat dep__plat--${plat}">${DEP_ROTULO[plat]}</span><p>${txt}</p><p class="dep__who">${nome}</p><p class="dep__from">${detalhe}</p></article></div>`
+    ).join('');
+    depTrack.style.transform = `translateX(-${depIdx * (100 / porVez)}%)`;
+    depDots.innerHTML = Array.from({ length: maxIdx + 1 }, (_, i) =>
+      `<button class="dep-dot${i === depIdx ? ' on' : ''}" type="button" aria-label="Ir para a página ${i + 1} de depoimentos" aria-current="${i === depIdx ? 'true' : 'false'}"></button>`
+    ).join('');
+    depDots.querySelectorAll('.dep-dot').forEach((b, i) => b.addEventListener('click', () => { depIdx = i; depRender(); depReinicia(); }));
+    depStatus.textContent = `Depoimento ${depIdx + 1} de ${lista.length} ${depFiltro === 'todas' ? '' : `do ${DEP_ROTULO[depFiltro]} `}em exibição.`;
+  };
+
+  const depVai = (dir) => {
+    const lista = depLista(), maxIdx = Math.max(0, lista.length - depPorVez());
+    if (!lista.length) return;
+    depIdx = dir > 0 ? (depIdx >= maxIdx ? 0 : depIdx + 1) : (depIdx <= 0 ? maxIdx : depIdx - 1);
+    depRender();
+  };
+  const depPara = () => { if (depTimer) { clearInterval(depTimer); depTimer = null; } };
+  const depReinicia = () => { depPara(); if (!depSemAnim) depTimer = setInterval(() => depVai(1), 6000); };
+  $('#dep-prev').addEventListener('click', () => { depVai(-1); depReinicia(); });
+  $('#dep-next').addEventListener('click', () => { depVai(1); depReinicia(); });
+  $('#dep-filtros').addEventListener('click', (e) => {
+    const b = e.target.closest('.chip'); if (!b) return;
+    $$('#dep-filtros .chip').forEach((c) => { c.classList.remove('is-on'); c.setAttribute('aria-selected', 'false'); });
+    b.classList.add('is-on'); b.setAttribute('aria-selected', 'true');
+    depFiltro = b.dataset.plat; depIdx = 0; depRender(); depReinicia();
+  });
+  depCar.addEventListener('mouseenter', depPara);
+  depCar.addEventListener('mouseleave', depReinicia);
+  depCar.addEventListener('focusin', depPara);
+  depCar.addEventListener('focusout', depReinicia);
+  let depX0 = null;
+  depCar.addEventListener('touchstart', (e) => { depX0 = e.changedTouches[0].clientX; }, { passive: true });
+  depCar.addEventListener('touchend', (e) => {
+    if (depX0 === null) return;
+    const dx = e.changedTouches[0].clientX - depX0; depX0 = null;
+    if (Math.abs(dx) > 40) { depVai(dx < 0 ? 1 : -1); depReinicia(); }
+  }, { passive: true });
+  window.addEventListener('resize', depRender);
+  depRender(); depReinicia();
 
   /* ── Contatos ───────────────────────────────────────────── */
 
