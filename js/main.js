@@ -776,6 +776,11 @@
     ['Excelente casa, excelente suíte. Muito espaço, beleza e sossego.', 'Amarildo', 'Brasil', 'booking'],
     ['Super agradável, aconchegante. Anfitrião muito receptivo e atencioso. Voltarei com certeza.', 'Helio', 'Brasil', 'booking'],
     ['Lugar ótimo! A casa é maravilhosa 😍 e tem tudo que vc precisa! O Pablo muito prestativo! Uma pena que fiquei só um dia 😔 voltarei com certeza!!', 'Luciene Pinheiro', '10/10 · ago/2025', 'booking'],
+    ['Casa excelente, muito limpa, confortável e bem organizada. O ambiente é agradável, tranquilo e exatamente como nas fotos. A localização é ótima e o anfitrião foi muito atencioso e prestativo durante toda a estadia. Com certeza voltarei e recomendo muito!', 'Rodrigo Amancio', '5/5 · 5 meses atrás', 'google'],
+    ['Uma casa incrível e super aconchegante, em um local tranquilo e perfeito para descansar. O ambiente é muito acolhedor, ideal para passar momentos especiais em família. Tivemos uma experiência maravilhosa, com muito conforto e paz. Sem dúvidas, um ótimo lugar para relaxar e aproveitar cada momento!', 'Julia Trabach', '5/5 · 5 meses atrás', 'google'],
+    ['Casa bonita, aconchegante e bem arrumada. Ótima disponibilidade de utensílios domésticos como objetos de cozinha e quarto. A casa fica na subida de uma rua uma pouco íngrime. Apesar do checkout ser um pouco cedo, deu para aproveitar. Já se tornou a minha pousada favorita da cidade.', 'Luana Raquelly', '5/5 · 2 anos atrás', 'google'],
+    ['Excelente lugar. Tudo foi bom. O responsável é super atencioso.', 'Luis Eduardo Machado Mattos', '5/5 · 3 meses atrás', 'google'],
+    ['A casa fica em uma localização ótima e uma rua muito tranquila. Muito organizada e muito bem equipada, vários utensílios, muito aconchegante. Todas as minhas dúvidas ele foi muito solicito, explicando tudo. Com certeza está na minha lista na próxima visita a cidade.', 'Alderlany Reis', '5/5 · 1 ano atrás', 'google'],
   ];
 
   const DEP_ROTULO = { booking: 'Booking.com', airbnb: 'Airbnb', google: 'Google' };
