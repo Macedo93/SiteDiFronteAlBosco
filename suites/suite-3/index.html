@@ -19,6 +19,11 @@
 <meta name="twitter:description" content="Suíte 3 da Di Fronte al Bosco, em Santa Teresa, ES: 1 cama de casal + 1 de solteiro, até 3 hóspedes, banheiro privativo, armário amplo e espaço de trabalho. Diária a partir de R$ 450. Faça sua pré-reserva direta!">
 <meta name="twitter:image" content="https://cf.bstatic.com/xdata/images/hotel/max1024x768/873658561.jpg?k=91f6600b28620190924dcaed672761ce0d1493f94128b56137ace0e52dc38fbd&o=">
 <link rel="icon" type="image/svg+xml" href="/img/favicon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
+<link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<meta name="theme-color" content="#3a5a40">
+<script>try{if(localStorage.getItem('dfb-consent')==='accepted'){window.dataLayer=window.dataLayer||[];window.dataLayer.push({'gtm.start':new Date().getTime(),event:'gtm.js'});var s=document.createElement('script');s.async=true;s.src='https://www.googletagmanager.com/gtm.js?id=GTM-WN5D63Q2';document.head.appendChild(s);}}catch(e){}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=Lato:wght@300;400;700&family=Sacramento&display=swap" rel="stylesheet">
@@ -137,6 +142,7 @@ main { padding-top: 6.5rem; }
 </script>
 </head>
 <body>
+<div class="load-screen" aria-hidden="true"><p>di fronte al bosco</p><span>Carregando…</span></div>
 <header class="hdr">
   <div class="wrap hdr__in">
     <a class="brand" href="/"><span class="brand__name">di fronte al bosco</span><span class="brand__sub">Santa Teresa · ES</span></a>
@@ -187,8 +193,20 @@ main { padding-top: 6.5rem; }
 <footer class="ft">
   <div class="wrap ft__base">
     <p>© 2026 Di Fronte al Bosco · Santa Teresa, ES</p>
+    <p><a href="/privacidade/">Privacidade</a> · <a href="/termos/">Termos de uso</a> · <a href="#" data-cookie-reabrir>Preferências de cookies</a></p>
     <p>Rua Vicente da Costa Oliveira, 239 · Santa Teresa, ES · 29650-000</p>
   </div>
 </footer>
+
+<div class="cookie" id="cookie" hidden role="dialog" aria-label="Preferências de cookies">
+  <p>Usamos cookies só para medir visitas (Google Analytics, via Tag Manager) e melhorar o site. Sem a sua aceitação, o Analytics não é carregado. Saiba mais na <a href="/privacidade/">Política de Privacidade</a>.</p>
+  <div class="cookie__botoes"><button class="btn btn--solid" id="cookie-aceitar" type="button">Aceitar</button><button class="btn btn--out" id="cookie-recusar" type="button">Recusar</button></div>
+</div>
+
+<nav class="cta-fixo" aria-label="Ações rápidas">
+  <a class="btn btn--solid" href="/#reservar">Reservar</a>
+  <a class="btn btn--out" href="https://wa.me/5527997574050">WhatsApp</a>
+</nav>
+<script src="/js/site.js"></script>
 </body>
 </html>
