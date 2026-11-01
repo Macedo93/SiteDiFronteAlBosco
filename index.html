@@ -336,8 +336,31 @@
       <p class="eyebrow">Hóspedes</p>
       <h2 class="h2">O que dizem <em>sobre a casa</em></h2>
     </header>
-    <div class="deps" id="deps"></div>
-    <p class="deps__src">Avaliações publicadas no Booking.com</p>
+    <p class="deps__resumo">
+      <a class="lnk" href="https://www.booking.com/hotel/br/di-front-al-bosco.pt-br.html" target="_blank" rel="noopener"><strong>9,3 no Booking.com</strong> · 89 avaliações</a>
+      <span aria-hidden="true"> · </span>
+      <a class="lnk" id="dep-google-link" href="https://www.google.com/maps/search/?api=1&query=-19.941463%2C-40.604819" target="_blank" rel="noopener">Avaliações no Google</a>
+      <span aria-hidden="true"> · </span>
+      <span>Depoimentos também do Airbnb</span>
+    </p>
+    <div class="filtros dep-filtros" id="dep-filtros" role="tablist" aria-label="Filtrar depoimentos por plataforma">
+      <button class="chip is-on" data-plat="todas" role="tab" aria-selected="true">Todas</button>
+      <button class="chip" data-plat="booking" role="tab" aria-selected="false">Booking.com</button>
+      <button class="chip" data-plat="airbnb" role="tab" aria-selected="false">Airbnb</button>
+      <button class="chip" data-plat="google" role="tab" aria-selected="false">Google</button>
+    </div>
+    <div class="dep-car" id="dep-car">
+      <div class="dep-view" id="dep-view">
+        <div class="dep-track" id="dep-track"></div>
+      </div>
+      <div class="dep-nav">
+        <button class="dep-nav__btn" id="dep-prev" type="button" aria-label="Depoimento anterior">‹</button>
+        <div class="dep-dots" id="dep-dots" role="tablist" aria-label="Páginas de depoimentos"></div>
+        <button class="dep-nav__btn" id="dep-next" type="button" aria-label="Próximo depoimento">›</button>
+      </div>
+      <p class="visually-hidden" id="dep-status" aria-live="polite"></p>
+    </div>
+    <p class="deps__src">Depoimentos copiados das plataformas, com o nome do hóspede como publicado. Para ver todas as avaliações, abra o link da plataforma acima.</p>
   </div>
 </section>
 
