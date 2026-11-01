@@ -521,9 +521,16 @@
     const ini = $('#f-in').value;
     const fim = $('#f-out').value;
 
-    if (!nome) { nota.textContent = 'Por favor, informe seu nome.'; $('#f-nome').focus(); return; }
-    if (!ini || !fim) { nota.textContent = 'Informe as datas de check-in e check-out.'; return; }
-    if (fim <= ini) { nota.textContent = 'O check-out precisa ser depois do check-in.'; return; }
+    const setErr = (id, campo, msg) => {
+      const el = document.getElementById(id);
+      if (el) { el.textContent = msg || ''; el.hidden = !msg; }
+      if (campo) campo.classList.toggle('campo-erro', !!msg);
+    };
+    const limpaErros = () => ['err-nome', 'err-tel', 'err-datas', 'err-suite'].forEach((id) => setErr(id, null, ''));
+    limpaErros();
+    if (!nome) { setErr('err-nome', $('#f-nome'), 'Por favor, informe seu nome.'); nota.textContent = 'Confira o nome no formulário.'; $('#f-nome').focus(); return; }
+    if (!ini || !fim) { setErr('err-datas', null, 'Informe as datas de check-in e check-out.'); nota.textContent = 'Confira as datas no formulário.'; return; }
+    if (fim <= ini) { setErr('err-datas', null, 'O check-out precisa ser depois do check-in.'); nota.textContent = 'Confira as datas no formulário.'; return; }
 
     const msg = $('#f-msg').value.trim();
     const n = noites(ini, fim);
@@ -551,6 +558,7 @@
     if (!numSuite) {
       const livresPeriodo = suitesLivresPeriodo(ini, fim, hospedes);
       if (livresPeriodo.length) {
+        setErr('err-suite', $('#f-s'), 'Escolha uma das suítes livres acima para gravar a pré-reserva.');
         nota.textContent = 'Escolha uma das suítes livres acima para gravar a pré-reserva.';
         document.getElementById('suites-livres')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
         return;
@@ -568,8 +576,9 @@
     // Validação local (calendário + fim de semana). Se falhar, não envia nada:
     // o hóspede precisa escolher outro período, em vez de mandar um pedido inválido.
     const erroPeriodo = validarPeriodo(numSuite, ini, fim);
-    if (erroPeriodo) { nota.textContent = erroPeriodo; return; }
+    if (erroPeriodo) { setErr('err-datas', null, erroPeriodo); nota.textContent = erroPeriodo; return; }
     if (!/^\d{10,13}$/.test(telefone)) {
+      setErr('err-tel', $('#f-tel'), 'Informe um telefone válido, com DDD, para gravar a pré-reserva.');
       nota.textContent = 'Informe um telefone válido, com DDD, para gravar a pré-reserva.';
       if ($('#f-tel')) $('#f-tel').focus();
       return;
@@ -612,11 +621,23 @@
     if (gravada) {
       nota.textContent = `Pré-reserva recebida! Aguardando confirmação do anfitrião. Abrimos o WhatsApp para avisar na hora.`;
       abrirWa(textoWa(`Pré-reserva registrada na agenda, aguardando confirmação.`));
+      window.location.href = '/obrigado/';
     } else {
       // Fallback exigido: a pré-reserva NÃO foi gravada, mas o pedido não se perde.
       nota.textContent = `Não foi possível gravar a pré-reserva na agenda (${erroApi}). Enviamos pelo WhatsApp mesmo assim.`;
       abrirWa(textoWa('A pré-reserva não foi gravada na agenda, por favor confirme por aqui.'));
     }
+  });
+
+  /* Erro por campo: some ao corrigir o campo */
+  [['#f-nome', 'err-nome'], ['#f-tel', 'err-tel'], ['#f-in', 'err-datas'], ['#f-out', 'err-datas'], ['#f-s', 'err-suite']].forEach(([sel, errId]) => {
+    const campo = $(sel);
+    if (!campo) return;
+    campo.addEventListener('input', () => {
+      const el = document.getElementById(errId);
+      if (el) el.hidden = true;
+      campo.classList.remove('campo-erro');
+    });
   });
 
   /* ── Comodidades ────────────────────────────────────────── */
