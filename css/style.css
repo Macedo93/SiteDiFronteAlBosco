@@ -1089,3 +1089,34 @@ p { margin: 0 0 1.1rem; }
 .suite-livre__preco { font-weight: 700; }
 .suite-livre__preco small { font-weight: 400; color: var(--cinza); }
 .suite-livre__acao { font-size: .82rem; color: var(--verde); font-weight: 700; }
+
+
+/* ─────────── Páginas novas, cookies, CTA fixo e carregamento ─────────── */
+
+.pagina h3 { font-family: var(--serif); font-weight: 500; font-size: 1.6rem; color: var(--verde-esc); margin: 2rem 0 .6rem; }
+.pagina ol, .pagina ul { margin: 0 0 1.1rem; padding-left: 1.4rem; }
+.pagina li { margin-bottom: .4rem; }
+
+.load-screen { position: fixed; inset: 0; z-index: 999; background: var(--creme); display: grid; place-content: center; justify-items: center; gap: .4rem; animation: load-out .45s ease 1s forwards; }
+.load-screen p { font-family: var(--script); font-size: 2.4rem; color: var(--verde-esc); margin: 0; }
+.load-screen span { color: var(--cinza); font-size: .9rem; }
+@keyframes load-out { to { opacity: 0; visibility: hidden; } }
+@media (prefers-reduced-motion: reduce) { .load-screen { display: none; } }
+
+.cookie { position: fixed; z-index: 200; left: 1rem; right: 1rem; bottom: 1rem; background: var(--branco); border: 1px solid var(--bege); border-radius: var(--r); box-shadow: var(--sh-lg); padding: 1rem 1.2rem; max-width: 46rem; margin-inline: auto; }
+.cookie p { margin: 0 0 .8rem; font-size: .95rem; }
+.cookie__botoes { display: flex; gap: .6rem; flex-wrap: wrap; }
+.cookie__botoes .btn { padding: .55rem 1.1rem; font-size: .95rem; }
+
+.cta-fixo { display: none; }
+.f-erro { color: #9a3b26; font-size: .92rem; margin: .3rem 0 .8rem; }
+.f-erro[hidden] { display: none; }
+.campo-erro { border-color: #9a3b26 !important; }
+
+@media (max-width: 860px) {
+  body { padding-bottom: 76px; }
+  .wa { display: none !important; }
+  .cta-fixo { display: flex; gap: .6rem; position: fixed; z-index: 190; left: 0; right: 0; bottom: 0; padding: .7rem .9rem calc(.7rem + env(safe-area-inset-bottom)); background: var(--verde-esc); box-shadow: 0 -6px 24px rgba(35, 35, 35, .25); }
+  .cta-fixo .btn { flex: 1; text-align: center; padding: .75rem .5rem; }
+  .cookie { bottom: 84px; }
+}
