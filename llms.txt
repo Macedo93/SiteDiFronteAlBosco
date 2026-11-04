@@ -1,0 +1,22 @@
+# Di Fronte al Bosco
+
+> Casa com 3 suítes privativas, piscina, lareira e hidromassagem em Santa Teresa, ES, a cerca de 900 m do centro histórico. Pré-reserva direta pelo site, sem taxa de plataforma, com confirmação do anfitrião pelo WhatsApp.
+
+## Sobre
+
+A Di Fronte al Bosco é uma casa com suítes privativas em Santa Teresa, no Espírito Santo — a primeira cidade de colonização italiana do Brasil. Cada hóspede tem seu quarto com banheiro exclusivo; sala, cozinha, piscina e espaços de convivência são compartilhados entre os hóspedes. Check-in das 13h às 18h e check-out das 7h às 11h. Pets não são permitidos; festas e eventos não são permitidos.
+
+## Principais páginas
+
+- [Página inicial](https://di-fronte-al-bosco.vercel.app/): a casa, as 3 suítes, lazer, regras, perguntas frequentes, roteiro de fim de semana, depoimentos de hóspedes do Booking, Airbnb e Google, e formulário de pré-reserva.
+- [Suíte Hidromassagem](https://di-fronte-al-bosco.vercel.app/suites/suite-hidromassagem/): a suíte mais ampla da casa, 2 camas de casal, até 4 hóspedes, banheira de hidromassagem no banheiro privativo e closet. Diária a partir de R$ 550.
+- [Suíte 2](https://di-fronte-al-bosco.vercel.app/suites/suite-2/): 1 cama de casal + 1 de solteiro, até 3 hóspedes, banheiro privativo com box e cama extra grátis mediante pedido. Diária a partir de R$ 450.
+- [Suíte 3](https://di-fronte-al-bosco.vercel.app/suites/suite-3/): 1 cama de casal + 1 de solteiro, até 3 hóspedes, banheiro privativo, armário amplo e espaço de trabalho. Diária a partir de R$ 450.
+- [Política de Privacidade](https://di-fronte-al-bosco.vercel.app/privacidade/): como a casa trata os dados de visitantes e de quem pede uma pré-reserva, conforme a LGPD.
+- [Termos de Uso](https://di-fronte-al-bosco.vercel.app/termos/): o que é a pré-reserva, preços, regras da casa, check-in e check-out, áreas compartilhadas e cancelamento.
+
+## Contato
+
+- [WhatsApp](https://wa.me/5527997574050): canal de reservas e dúvidas, informado no próprio site.
+- [Instagram](https://instagram.com/difrontalbosco)
+- [Booking.com](https://www.booking.com/hotel/br/di-front-al-bosco.pt-br.html)
