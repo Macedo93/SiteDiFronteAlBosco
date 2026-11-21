@@ -21,6 +21,8 @@ A Di Fronte al Bosco é uma casa com suítes privativas em Santa Teresa, no Esp�
 - [Fim de Semana](https://di-fronte-al-bosco.vercel.app/fim-de-semana/): roteiro de sexta a domingo — lareira, centro histórico, Rua do Lazer e piscina.
 - [Lareira](https://di-fronte-al-bosco.vercel.app/lareira/): lareira na sala de convivência para as noites frescas da serra.
 - [Onde Ficar em Santa Teresa](https://di-fronte-al-bosco.vercel.app/onde-ficar/): casa com 3 suítes a 900 m do centro histórico e da Rua do Lazer.
+- [Casa Inteira](https://di-fronte-al-bosco.vercel.app/casa-inteira/): a casa toda para um só grupo — 3 suítes, até 10 hóspedes, piscina, lareira e churrasco a 900 m do centro. Festas e eventos não são permitidos.
+- [O que Fazer em Santa Teresa](https://di-fronte-al-bosco.vercel.app/o-que-fazer/): Museu Mello Leitão, Rua do Lazer, Casa Lambert, Circuito Caravaggio e cachoeiras — roteiro de fim de semana a poucos minutos da casa.
 
 ## Contato
 

@@ -24,3 +24,11 @@ Volumes e posições são "n/d" — Search Console não está conectado (ver rel
 14. Ferramenta gratuita (Monthly): calculadora de diária/estimativa de estadia. Query: a definir com o dono. Mudança: aproveitar a calculadora que já existe no formulário, como página própria, sem cadastro. Depende de decisão do dono.
 15. Consolidar o bloco JSON-LD `LodgingBusiness` repetido em 8 páginas com `@id` único. Query: n/a. Páginas: home + 7 de intenção. Mudança: técnica, baixo impacto direto; só após os itens acima.
 16. NÃO FAZER: páginas para "pet friendly", "chalé" e "pousada barata" — o produto não atende (pets proibidos, não é chalé, diária a partir de R$ 450). Ver `seo/keyword-map.csv`.
+
+## Atualização 2026-11-21 (follow-up, PR seo-autopilot-followup-20261121)
+- [x] Página "casa inteira / até 10 hóspedes" — criada (`/casa-inteira/`), no sitemap e no llms.txt.
+- [x] Artigo "o que fazer em Santa Teresa" — criado (`/o-que-fazer/`), expandindo a seção #destino da home.
+- [ ] Âncoras internas da home para as páginas de intenção — patch preparado em `PATCHES-PARA-O-PAI.md` (seção A), NÃO aplicado nesta PR: exige reescrever a home (1130 linhas) e o "Veja também" das 7 páginas de intenção (seção B); aplicar numa próxima rodada com revisão do diff.
+- [ ] Página "como chegar sem carro" — RASCUNHO em `seo/como-chegar-sem-carro-RASCUNHO.md`, NÃO publicar: preço e último horário divergem entre fontes; falta confirmar preço/grade atuais, último horário de domingo e o trecho rodoviária → casa. Depende do dono.
+- [ ] Página "aniversário e comemorações" — BLOQUEADA POR CONFLITO: as regras da casa publicadas dizem "Festas e eventos não são permitidos". Não criar página afirmando que festas são permitidas. Decisão do dono: (a) não ter a página ou (b) página de "comemoração tranquila" só com o aval dele sobre o que pode ser oferecido.
+- [ ] Expansão das FAQs com as perguntas do WhatsApp — depende do dono informar as 3–5 perguntas mais frequentes. Nenhuma pergunta foi inventada. FAQs atuais no site (12, home): check-in/out; áreas compartilhadas; cozinhar; café da manhã; o que vem na suíte; frio/climatização; pet; estacionamento; crianças; cancelamento; perto do centro; quantas pessoas por suíte.
