@@ -14,6 +14,13 @@ A Di Fronte al Bosco é uma casa com suítes privativas em Santa Teresa, no Esp�
 - [Suíte 3](https://di-fronte-al-bosco.vercel.app/suites/suite-3/): 1 cama de casal + 1 de solteiro, até 3 hóspedes, banheiro privativo, armário amplo e espaço de trabalho. Diária a partir de R$ 450.
 - [Política de Privacidade](https://di-fronte-al-bosco.vercel.app/privacidade/): como a casa trata os dados de visitantes e de quem pede uma pré-reserva, conforme a LGPD.
 - [Termos de Uso](https://di-fronte-al-bosco.vercel.app/termos/): o que é a pré-reserva, preços, regras da casa, check-in e check-out, áreas compartilhadas e cancelamento.
+- [Lua de Mel](https://di-fronte-al-bosco.vercel.app/lua-de-mel/): suíte com hidromassagem, lareira e piscina para casais, no silêncio do bosque.
+- [Piscina](https://di-fronte-al-bosco.vercel.app/piscina/): piscina ao ar livre aberta o ano todo, com deck, a 900 m do centro.
+- [Hidromassagem](https://di-fronte-al-bosco.vercel.app/hidromassagem/): banheira de hidromassagem no banheiro privativo da Suíte Hidromassagem.
+- [Família](https://di-fronte-al-bosco.vercel.app/familia/): crianças bem-vindas, suítes para até 4 hóspedes, piscina, churrasco e cozinha equipada.
+- [Fim de Semana](https://di-fronte-al-bosco.vercel.app/fim-de-semana/): roteiro de sexta a domingo — lareira, centro histórico, Rua do Lazer e piscina.
+- [Lareira](https://di-fronte-al-bosco.vercel.app/lareira/): lareira na sala de convivência para as noites frescas da serra.
+- [Onde Ficar em Santa Teresa](https://di-fronte-al-bosco.vercel.app/onde-ficar/): casa com 3 suítes a 900 m do centro histórico e da Rua do Lazer.
 
 ## Contato
 
